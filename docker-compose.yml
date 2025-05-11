@@ -1,0 +1,36 @@
+services:
+  backend:
+    build: ./backend
+    restart: always
+    expose:
+      - "8000" # Only inside network
+    networks:
+      - marsea_network
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    networks:
+      - marsea_network
+
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - "80:80"    # HTTP
+      - "81:81"    # Admin panel of NPM
+      - "443:443"  # HTTPS
+    volumes:
+      - ./npm/data:/data
+      - ./npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - marsea_network
+
+networks:
+  marsea_network:
+    driver: bridge

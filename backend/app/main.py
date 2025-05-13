@@ -44,7 +44,9 @@ async def wayforpay_callback(request: Request):
         )
 
     if callback.transactionStatus == "Approved":
-        tg_api.send_message("Payment confirmed")
+        order_reference = callback.orderReference
+
+        tg_api.send_message(f"Payment confirmed\n\nID: {order_reference}")
 
         return {"status": "success", "message": "Payment confirmed"}
 

@@ -1,4 +1,6 @@
 import hmac
+import uuid
+import time
 import hashlib
 from typing import Dict, Any
 
@@ -6,6 +8,10 @@ from config import config
 
 
 base_config = config.get("base")
+
+
+def generate_order_reference():
+    return str(uuid.uuid4())
 
 
 def create_signature(data: list) -> str:
@@ -23,13 +29,13 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict:
     """
     Генерує форму оплати Wayforpay
     """
-    order_date = int(__import__("time").time())
+    order_reference = generate_order_reference()
 
     payment_data = {
         "merchantAccount": base_config.MERCHANT_ACCOUNT,
         "merchantDomainName": base_config.WEBSITE_DOMAIN,
-        "orderReference": data["order_reference"],
-        "orderDate": order_date,
+        "orderReference": order_reference,
+        "orderDate": int(time.time()),
         "amount": data["amount"],
         "currency": data["currency"],
         "productName": [data["product_name"]],

@@ -1,0 +1,25 @@
+.page_product{
+    width: 100%;
+}
+.breadcrumbs{
+    margin-top: 50px;
+    margin-left: 60px;
+    font-family: Montserrat;
+    font-weight: 400;
+    font-size: 18px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: flex-start;
+
+}
+.product_desc{
+    margin-top: 40px;
+    margin-left: 60px;
+}
+.product_desc_main{
+    width: 570px;
+    margin-left: 40px;
+}
+.page_product .marsea_line{
+    margin-top: 100px;
+}

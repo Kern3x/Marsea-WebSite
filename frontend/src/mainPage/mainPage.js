@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "./mainPageStyle.css"
 import main_banner from "./images/main_banner.png"
 import basket from "../components/images/basket.svg";
@@ -27,108 +27,21 @@ import set1 from "./images/set1.png";
 import set2 from "./images/set2.png";
 import set3 from "./images/set3.png";
 import beautyCombo from "./images/beautyCombo.png";
+import BasketElement from "../basket/BasketElement";
 
-const MainPage = () => {
+const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
+    const [products, setProducts] = useState(JSON.parse(localStorage.getItem("cart")))
 
-    const bars =
-        [
-            {
-                name: "glow Bar",
-                image: bar1,
-                description: "— твоя шкіра, волосся та нігті скажуть: “Дякую!”",
-                price: 88,
-                href: "/glowbar"
-            },{
-            name: "detox Bar",
-            image: bar2,
-            description: "— перезавантаження  вашого організму.",
-            price: 65,
-            href: "/detoxbar"
-        },{
-            name: "Sleep Bar",
-            image: bar3,
-            description: "— ніжний батончик з вишнею та мелісою для вечірнього ритуалу.",
-            price: 92,
-            href: "/sleepbar"
-        },{
-            name: "focus Bar",
-            image: bar4,
-            description: "—пам’ять, швидкість та продуктивність.",
-            price: 67,
-            href: "/focusbar"
-        }
-        ]
-    const powders = [
-        {
-            name: "манго-банан",
-            image: powder1,
-            description: "— сублімірований мікс фруктів для активності та фокусу.",
-            price: 214,
-            href: "/powder1"
-        },{
-            name: "обліпиха-черешня",
-            image: powder2,
-            description: "— суперфруктовий мікс для сяйва зсередини.",
-            price: 212,
-            href: "/powder2"
-        },{
-            name: "ягідно-фруктовий",
-            image: powder3,
-            description: "— сублімований мікс для внутрішнього балансу.",
-            price: 218,
-            href: "/powder3"
-        }
-    ]
-    const kombucha = [
-        {
-            name: "класична",
-            image: kombucha1,
-            description: "— коли хочеться простоти, балансу та легкого перезбору думок.",
-            price: 50,
-            href: "/kombucha-classic"
-        },{
-            name: "гранат",
-            image: kombucha2,
-            description: "— гранатова комбуча для моментів м’якого перезавантаження.",
-            price: 50,
-            href: "/kombucha-granat"
-        },{
-            name: "манго-ананас",
-            image: kombucha3,
-            description: "— як ковток тропічного сонця у розпал дня.",
-            price: 50,
-            href: "/kombucha-mango"
-        },{
-            name: "яблуко",
-            image: kombucha4,
-            description: "— для затишних пауз і м’якого оновлення зсередини.",
-            price: 50,
-            href: "/kombucha-apple"
-        }
-    ]
-    const sets = [
-        {
-            name: "манго-банан (x2 в наборі)",
-            image: set1,
-            description: "— сублімірований мікс фруктів для активності та фокусу.",
-            price: 495,
-            href: "/set-mango"
-        },{
-            name: "обліпиха-черешня (x2 в наборі)",
-            image: set2,
-            description: "— суперфруктовий мікс для сяйва зсередини.",
-            price: 495,
-            href: "/set-cherry"
-        },{
-            name: "ягідно-фруктовий (x2 в наборі)",
-            image: set3,
-            description: "— сублімований мікс для внутрішнього балансу.",
-            price: 495,
-            href: "/set-fruits"
-        }
-    ]
+    const [products1, setProducts1] = useState(0)
 
 
+    useEffect(() => {
+        setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0))
+
+        localStorage.setItem("cart", JSON.stringify(products))
+
+    }, [products])
+    console.log(JSON.parse(localStorage.getItem("cart")).length)
     return (
         <>
 
@@ -148,7 +61,38 @@ const MainPage = () => {
                                     <a href="#set">набори</a>
                                 </div>
                                 <div className="basket_block">
-                                    <img src={basket} alt=""/>
+                                    <a onClick={() => {
+                                        document.querySelector(".cart_modal").style.cssText = "display:block"
+                                    }}><img src={basket} alt=""/></a>
+                                    <div className="cart_modal">
+                                        <div className="cart_modal_text">Деталі замовлення</div>
+                                        {products.length < 1 ? <>
+                                                <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
+                                                <hr/>
+                                            </> :
+                                            <>{products.map((e) =>
+                                                <BasketElement image={e.image} namee={e.namee} price={e.price}
+                                                               setProducts={setProducts} products={products}
+                                                               quantity={e.quantity}/>
+                                            )}
+                                                <div className="summ_products">
+                                                    <div>ВСЬОГО</div>
+                                                    <div>{products1} грн.</div>
+                                                </div>
+                                            </>
+                                        }
+
+                                        <a href="/basket">
+                                            <button className="to_cart">
+                                                до кошика
+                                            </button>
+                                        </a>
+                                        <button className="button_close_cart" onClick={() => {
+                                            document.querySelector(".cart_modal").style.cssText = "display:none"
+                                        }}>
+                                            закрити
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,9 +105,13 @@ const MainPage = () => {
                                 фруктів. Ми віримо, що корисне може бути смачним, а здоров’я — стилем життя,
                                 а не компромісом.
                             </div>
-                            <button className="banner_button">
-                                Замовити
-                            </button>
+
+                                <button className="banner_button">
+                                    <a href="/basket">
+                                    Замовити
+                                    </a>
+                                </button>
+
                         </div>
                     </div>
                 </div>
@@ -185,7 +133,7 @@ const MainPage = () => {
                                 description={e.description}
                                 image={e.image}
                                 price={e.price}
-                                href = {e.href}
+                                href={e.href}
                             />
                         )}
                     </div>
@@ -204,9 +152,11 @@ const MainPage = () => {
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
                         </div>
-                        <button className="button_buy marsi">
-                            Замовити
-                        </button>
+                        <a href="/basket" className = "marsi_a"> <button className="button_buy marsi">
+
+                                Замовити
+
+                        </button> </a>
                     </div>
                 </div>
                 <a name="about"></a>
@@ -238,7 +188,7 @@ const MainPage = () => {
                             description={e.description}
                             image={e.image}
                             price={e.price}
-                            href = {e.href}
+                            href={e.href}
                         />)}
 
                     </div>
@@ -255,12 +205,14 @@ const MainPage = () => {
                         Ідеальний мікс для краси та енергії.
                     </div>
                     <div className="beauty_block_products">
-                        <ProductCard
-                            namee = "BEAUTY-КОМБО"
-                            description="— 2х саше манго-банан, 2х саше ягідно-фруктовий, 2х саше обліпиха-черешня"
-                            price="480"
-                            image={beautyCombo}
-                        />
+
+                        {beautyKombo.map((e) => <ProductCard
+                            namee={e.name}
+                            description={e.description}
+                            image={e.image}
+                            price={e.price}
+                            href={e.href}
+                        />)}
                     </div>
                 </div>
                 <div className="marsea_line">
@@ -277,9 +229,11 @@ const MainPage = () => {
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
                         </div>
-                        <button className="button_buy marsi">
+                        <a href="/basket" className = "marsi_a"> <button className="button_buy marsi">
+
                             Замовити
-                        </button>
+
+                        </button> </a>
                     </div>
                 </div>
                 <div className="kombucha_block">
@@ -297,7 +251,7 @@ const MainPage = () => {
                                 description={e.description}
                                 image={e.image}
                                 price={e.price}
-                                href = {e.href}
+                                href={e.href}
                             />
                         )}
 
@@ -334,7 +288,7 @@ const MainPage = () => {
                             description={e.description}
                             image={e.image}
                             price={e.price}
-                            href = {e.href}
+                            href={e.href}
                         />)}
 
                     </div>

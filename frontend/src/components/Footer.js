@@ -16,8 +16,8 @@ const Footer = () => {
                     <a href="#set">набори</a>
                 </div>
                 <div className = "society_footer">
-                    <div>instagram</div>
-                    <div>telegram</div>
+                    <div><a href = "https://www.instagram.com/marsea.official?igsh=OW04ZHRjMHYyNWgx" target = "_blank">instagram</a></div>
+                    <div><a href = "https://t.me/marsi2k19" target = "_blank">telegram</a></div>
                 </div>
             </div>
             <div className = "copyright_marsea">

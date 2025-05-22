@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "./basket.css"
 import bar from "../components/images/bar1.png"
 import kr from "../components/images/bitcoin-icons_plus-outline.svg"
@@ -8,8 +8,31 @@ import BasketElement from "./BasketElement";
 import ProductCard from "../components/ProductCard";
 import newMail from "./newMail.svg"
 import Header from "../components/Header";
+import CitySelect from "../components/SelectObl";
+import CityWarehouseSelect from "../components/SelectObl";
+import SelectCity from "../components/SelectCity";
 
-const Basket = () => {
+const Basket = ({bars}) => {
+
+    const [products, setProducts] = useState(JSON.parse(localStorage.getItem("cart")))
+    const [products1, setProducts1] = useState(0)
+    const [deliveryMethod, setDeliveryMethod] = useState("post");
+
+
+    useEffect(() => {
+        setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0))
+        localStorage.setItem("cart", JSON.stringify(products))
+
+
+
+    }, [products])
+    const handleCityChange = (city) => {
+        console.log("Selected city:", city);
+    };
+
+
+
+
     return (
         <>
             <Header/>
@@ -18,16 +41,15 @@ const Basket = () => {
                     <div className="products_details">
                         <div className="details_text">деталі замовлення</div>
                         <div className="details_quantity">
-                            <BasketElement/>
-                            <BasketElement/>
-                            <BasketElement/>
-                            <BasketElement/>
-                            <BasketElement/>
+                            {products.map((e) =>
+                                <BasketElement image={e.image} namee={e.namee} price={e.price} setProducts={setProducts} products={products} quantity={e.quantity}/>
+                            )}
+                            <div className="summ_products">
+                                <div>ВСЬОГО:</div>
+                                <div className="summ">{products1}₴</div>
+                            </div>
                         </div>
-                        <div className="summ_products">
-                            <div>ВСЬОГО:</div>
-                            <div className="summ">352₴</div>
-                        </div>
+
                     </div>
                     <div className="order_form">
                         <div className="order_text">
@@ -59,14 +81,28 @@ const Basket = () => {
                             <div className="order_details_main">
 
                                 <label className="custom-checkbox checkbox_mail">
-                                    <input type="checkbox" className="checkbox-input"/>
+                                    <input
+                                        type="radio"
+                                        name="delivery"
+                                        value="post"
+                                        className = "checkbox-input"
+                                        checked={deliveryMethod === "post"}
+                                        onChange={() => setDeliveryMethod("post")}
+                                    />
 
                                     <span className="checkbox-custom"></span>
                                     <img src = {newMail} alt = ""/>
                                     ДОСТАВКА У ВІДДІЛЕННЯ НОВОЇ ПОШТИ
                                 </label>
-                                <label className="custom-checkbox checkbox_mail">
-                                    <input type="checkbox" className="checkbox-input"/>
+                                <label className="custom-checkbox checkbox_mail curier_basket">
+                                    <input
+                                        type="radio"
+                                        name="delivery"
+                                        className = "checkbox-input"
+                                        value="courier"
+                                        checked={deliveryMethod === "courier"}
+                                        onChange={() => setDeliveryMethod("courier")}
+                                    />
 
                                     <span className="checkbox-custom"></span>
                                     <img src = {newMail} alt = ""/>
@@ -77,15 +113,10 @@ const Basket = () => {
                                 <div className="name_input">
                                     ОБЛАСТЬ
                                 </div>
-                                <input type="text" className="form_input" placeholder="КИЇВСЬКА ОБЛАСТЬ"/>
-                                <div className="name_input">
-                                    МІСТО
+                                <div style={{ width: "300px", margin: "20px auto" }}>
+                                    <SelectCity placeholder = "КИЇВСЬКА ОБЛАСТЬ"/>
                                 </div>
-                                <input type="text" className="form_input" placeholder="КИЇВ"/>
-                                <div className="name_input">
-                                    відділення
-                                </div>
-                                <input type = "text" className="form_input" placeholder="№11223"/>
+
                             </div>
                             <button className = "order_button_next">
                                 вперед
@@ -114,10 +145,15 @@ const Basket = () => {
                         без глютену. ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
                     </div>
                     <div className = "kombucha_block_products">
-                        <ProductCard/>
-                        <ProductCard/>
-                        <ProductCard/>
-                        <ProductCard/>
+                        {bars.map((e) =>
+                            <ProductCard
+                                namee={e.name}
+                                description={e.description}
+                                image={e.image}
+                                price={e.price}
+                                href = {e.href}
+                            />
+                        )}
 
                     </div>
                 </div>

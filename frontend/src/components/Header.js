@@ -1,8 +1,21 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "./header.css"
 import logo from "./images/logo.svg"
 import basket from "./images/basket.svg"
+import BasketElement from "../basket/BasketElement";
 const Header = () => {
+    const [products, setProducts] = useState(JSON.parse(localStorage.getItem("cart")))
+    const [products1, setProducts1] = useState(0)
+
+
+
+    useEffect(() => {
+        setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0))
+        localStorage.setItem("cart", JSON.stringify(products))
+
+
+
+    }, [products])
     return (
         <div className = "header">
             <div>
@@ -19,8 +32,39 @@ const Header = () => {
                     <a href="#showbox">шоубокс</a>
                     <a href="#set">набори</a>
                 </div>
-                <div>
-                    <img src={basket} alt = ""/>
+                <div className = "header_cart_button">
+                    <a onMouseOver={() => {
+                        document.querySelector(".cart_modal").style.cssText = "display:block"
+                    }}><img src={basket} alt=""/></a>
+                    <div className="cart_modal">
+                        <div className="cart_modal_text">Деталі замовлення</div>
+                        {products.length < 1 ? <>
+                                <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
+                                <hr/>
+                            </> :
+                            <>{products.map((e) =>
+                                <BasketElement image={e.image} namee={e.namee} price={e.price}
+                                               setProducts={setProducts} products={products}
+                                               quantity={e.quantity}/>
+                            )}
+                                <div className="summ_products">
+                                    <div>ВСЬОГО</div>
+                                    <div>{products1} грн.</div>
+                                </div>
+                            </>
+                        }
+
+                        <a href="/basket">
+                            <button className="to_cart">
+                                до кошика
+                            </button>
+                        </a>
+                        <button className="button_close_cart" onClick={() => {
+                            document.querySelector(".cart_modal").style.cssText = "display:none"
+                        }}>
+                            закрити
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -8,6 +8,11 @@
 }
 a{
     text-decoration: none;
+    cursor: pointer;
+}
+button{
+    cursor: pointer;
+    overflow: hidden;
 }
 .App{
     min-height: 100vh;
@@ -15,4 +20,27 @@ a{
     flex-direction: column;
     align-items: center;
     overflow-x: hidden;
+}
+.header_cart_button{
+    display: flex;align-items: center;
+}
+.main_page .basket_product, .header_cart_button .basket_product{
+    margin-top: 35px;
+    border-bottom: 1px solid #EFECF0;
+}
+.to_cart{
+    color: #7B181E;
+    border: 1px solid #7B181E;
+    border-radius: 90px;
+    margin-top: 25px;
+    width: 100%;
+    padding: 30px;
+    background: #FFFFFF;
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 130%;
+    text-align: center;
+    text-transform: uppercase;
+
 }

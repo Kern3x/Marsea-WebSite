@@ -18,12 +18,11 @@ import BasketElement from "../basket/BasketElement";
         }, []);
 
         useEffect(() => {
-            setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0))
-            localStorage.setItem("cart", JSON.stringify(products))
-
-
-
-        }, [products])
+            if (Array.isArray(products)) {
+                setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0));
+                localStorage.setItem("cart", JSON.stringify(products));
+            }
+        }, [products]);
         return (
             <div className={`header ${showHeader ? "visible" : ""}`}>
                 <div>
@@ -46,7 +45,7 @@ import BasketElement from "../basket/BasketElement";
                         }}><img src={basket} alt=""/></a>
                         <div className="cart_modal_h">
                             <div className="cart_modal_text">Деталі замовлення</div>
-                            {products.length < 1 ? <>
+                            {products?.length || 0 < 1 ? <>
                                     <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
                                     <hr/>
                                 </> :

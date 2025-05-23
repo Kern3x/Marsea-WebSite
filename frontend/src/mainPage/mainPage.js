@@ -15,7 +15,7 @@ import Header from "../components/Header";
 import BasketElement from "../basket/BasketElement";
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
-    const [products, setProducts] = useState(JSON.parse(localStorage.getItem("cart")))
+    const [products, setProducts] = useState(JSON.parse(localStorage.getItem("cart")) || [])
 
     const [products1, setProducts1] = useState(0)
 

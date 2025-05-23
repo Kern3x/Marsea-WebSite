@@ -10,7 +10,7 @@ app = FastAPI()
 tg_api = TelegramAPIHelper()
 
 
-@app.post("/pay")
+@app.post("/api/pay")
 def create_payment(payload: PaymentRequest):
     """
     Генерація платіжного посилання
@@ -19,7 +19,7 @@ def create_payment(payload: PaymentRequest):
     return link_data
 
 
-@app.post("/callback")
+@app.post("/api/callback")
 async def wayforpay_callback(request: Request):
     """
     Обробка callback від Wayforpay

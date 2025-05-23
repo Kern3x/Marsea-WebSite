@@ -6,7 +6,27 @@ const ProductCard = ({image, description, namee, price, href}) => {
     return (
         <div className = "product_card">
             <div className = "add_to_cart">
-                <img src = {addToCart} alt = ""/>
+                <img src = {addToCart} alt = "" onClick={() => {
+                    if(localStorage.getItem("cart")){
+                        let el = JSON.parse(localStorage.getItem("cart"))
+
+                        let el1
+                        /*for (let i = 0; i < el.length; i++) {
+                            if (el[i].namee === namee){
+                                el1 = JSON.stringify([...el,{image,namee, price, quantity: 1}])
+                            }
+                        }*/
+                        el1 = JSON.stringify([...el,{image,namee, price, quantity: 1}])
+                        localStorage.setItem("cart", el1)
+                        console.log(JSON.parse(localStorage.getItem("cart")))
+
+                    }else {
+                        let el1 = JSON.stringify([{image,namee, price, quantity: 1}])
+                        localStorage.setItem("cart", el1)
+                        console.log(JSON.parse(localStorage.getItem("cart")))
+
+                    }
+                }}/>
             </div>
             <div className = "product_image">
                <a href = {href}> <img src = {image} alt = ""/></a>

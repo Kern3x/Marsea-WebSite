@@ -7,7 +7,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    transition: transform 0.3s ease;
+    z-index: 99;
 }
+
+
 .header_main_menu{
     display: flex;
     align-items: center;
@@ -24,6 +32,69 @@
 
     margin-left: 15px;
 }
+.header_cart_button{
+    position: relative;
+}
 .main_menu_basket{
     display: flex;
+}
+
+.header .summ_products{
+    margin: 20px 16px 0 16px;
+}
+.main_page .summ_products{
+    margin: 20px 16px 0 16px;
+}
+.cart_modal{
+    display: none;
+    position: absolute;
+    top: 80px;
+    right: 0px;
+    overflow: hidden;
+    z-index: 9;
+    padding: 0 16px;
+    min-height: 257px;
+    border-radius: 30px;
+    border: 1px solid #CCD7E2;
+    box-shadow: 0px 0px 15px 0px #4D344A26;
+    min-width: 336px;
+    background: #FFFFFF;
+
+}
+.cart_modal_text{
+    margin-top: 36px;
+    width: 100%;
+    margin-left: 16px;
+    text-align: left;
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 100%;
+   text-transform: none;
+
+
+}
+.empty_cart{
+    margin-top: 35px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 400;
+}
+hr{
+    margin: 0 16px;
+    background: #EFECF0;
+}
+.button_close_cart{
+    padding: 30px 16px;
+    width: 100%;
+    background: #FFFFFF;
+    border: none;
+    text-transform: uppercase;
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 130%;
+    text-align: center;
+
 }

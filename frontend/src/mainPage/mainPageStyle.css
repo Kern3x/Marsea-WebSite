@@ -38,6 +38,7 @@
 
 .basket_block {
     display: flex;
+    margin-right: 70px;
     align-items: center;
 }
 
@@ -119,14 +120,27 @@
 .bars_block_products {
     margin-top: 20px;
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 20px;
+    justify-content: center;
+    display: flex;
+    gap: 20px;
+    margin-bottom: 100px;
 }
 
 .marsea_line {
     width: 100%;
 
+}
+.marsi_a{
+    color: #FFFFFF;
+    margin-top: 20px;
+}
+.banner_button a{
+    width: 100%;
+    color: white;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .line_images {
@@ -162,7 +176,6 @@
 }
 
 .button_buy {
-    margin-top: 20px;
     padding: 30px 96px;
     color: #FFFFFF;
     background: #7B181E;

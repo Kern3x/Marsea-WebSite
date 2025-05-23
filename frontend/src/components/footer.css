@@ -32,6 +32,9 @@
     font-size: 18px;
     justify-content: flex-end;
 }
+.society_footer a{
+    color: #FFFFFF;
+}
 .society_footer div{
     margin-left: 15px;
 }

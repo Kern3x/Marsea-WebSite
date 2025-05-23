@@ -61,6 +61,22 @@
     background: #FFFFFF;
 
 }
+.cart_modal_h{
+    display: none;
+    position: absolute;
+    top: 80px;
+    right: 0px;
+    overflow: hidden;
+    z-index: 9;
+    padding: 0 16px;
+    min-height: 257px;
+    border-radius: 30px;
+    border: 1px solid #CCD7E2;
+    box-shadow: 0px 0px 15px 0px #4D344A26;
+    min-width: 336px;
+    background: #FFFFFF;
+
+}
 .cart_modal_text{
     margin-top: 36px;
     width: 100%;

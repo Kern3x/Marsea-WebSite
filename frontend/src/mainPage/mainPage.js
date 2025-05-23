@@ -15,7 +15,10 @@ import Header from "../components/Header";
 import BasketElement from "../basket/BasketElement";
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
-    const [products, setProducts] = useState(JSON.parse(localStorage.getItem("cart")) || [])
+    const [products, setProducts] = useState(() => {
+        const saved = localStorage.getItem("cart");
+        return saved ? JSON.parse(saved) : [];
+    });
 
     const [products1, setProducts1] = useState(0)
 
@@ -30,7 +33,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
     return (
         <div className = "main">
 
-            <Header/>
+            <Header setProducts={setProducts} products={products}/>
             <div className="main_page">
                 <div className="main_banner_block">
                     <div className="main_banner">
@@ -120,6 +123,8 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                                 image={e.image}
                                 price={e.price}
                                 href={e.href}
+                                products={products}
+                                setProducts={setProducts}
                             />
                         )}
                     </div>

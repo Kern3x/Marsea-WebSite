@@ -1,11 +1,11 @@
 services:
-  backend:
-    build: ./backend
-    restart: always
-    expose:
-      - "8000" # Only inside network
-    networks:
-      - marsea_network
+  # backend:
+  #   build: ./backend
+  #   restart: always
+  #   expose:
+  #     - "8000" # Only inside network
+  #   networks:
+  #     - marsea_network
 
   frontend:
     build:
@@ -14,7 +14,8 @@ services:
     volumes:
       - ./frontend:/app
     depends_on:
-      - backend
+      # - backend
+      - npm
     networks:
       - marsea_network
 

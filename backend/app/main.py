@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.tg_api_helper import TelegramAPIHelper
 from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
@@ -8,6 +9,19 @@ from app.wayforpay.client import generate_payment_link, create_signature
 
 app = FastAPI()
 tg_api = TelegramAPIHelper()
+
+origins = [
+    "http://localhost:3000",  # якщо фронт запущений локально
+    "https://marsea-shop.com",  # якщо фронт розгорнутий на цьому домені
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # або ["*"] для дозволу всім (небажано в проді)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/api/pay")

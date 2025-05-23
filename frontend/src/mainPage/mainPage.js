@@ -12,21 +12,6 @@ import cat_showbox from "./images/Cat_Showbox.svg"
 import fish_showbox from "./images/fish_showbox.svg"
 import ProductCardBig from "../components/ProductCardBig";
 import Header from "../components/Header";
-import bar1 from "../components/images/bar1.png";
-import bar2 from "./images/detoxbar.png";
-import bar3 from "./images/sleepbar.png";
-import bar4 from "./images/focusbar.png";
-import powder1 from "./images/powder1.png";
-import powder2 from "./images/powder2.png";
-import powder3 from "./images/powder3.png";
-import kombucha1 from "./images/kombucha1.png";
-import kombucha2 from "./images/kombucha2.png";
-import kombucha3 from "./images/kombucha3.png";
-import kombucha4 from "./images/kombucha4.png";
-import set1 from "./images/set1.png";
-import set2 from "./images/set2.png";
-import set3 from "./images/set3.png";
-import beautyCombo from "./images/beautyCombo.png";
 import BasketElement from "../basket/BasketElement";
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
@@ -41,10 +26,11 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
         localStorage.setItem("cart", JSON.stringify(products))
 
     }, [products])
-    console.log(JSON.parse(localStorage.getItem("cart")).length)
+    //console.log(JSON.parse(localStorage.getItem("cart")).length)
     return (
-        <>
+        <div className = "main">
 
+            <Header/>
             <div className="main_page">
                 <div className="main_banner_block">
                     <div className="main_banner">
@@ -294,7 +280,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
 
     );
 };

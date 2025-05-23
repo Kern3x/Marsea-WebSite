@@ -38,6 +38,7 @@
 
 .basket_block {
     display: flex;
+    margin-right: 70px;
     align-items: center;
 }
 

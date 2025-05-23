@@ -6,6 +6,19 @@
     scroll-behavior: smooth;
 
 }
+.header {
+    transform: translateY(0); /* Показываем */
+}
+.dis_block{
+    display: block !important;
+}
+.main .header{
+    transform: translateY(-100%);
+}
+.main .header.visible {
+    transform: translateY(0); /* Показываем */
+}
+
 a{
     text-decoration: none;
     cursor: pointer;

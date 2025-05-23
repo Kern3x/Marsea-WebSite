@@ -8,6 +8,9 @@ const BasketElement = ({image, price, namee, setProducts, products, quantity}) =
 
 
     const [productQuantity, setProductQuantity] = useState(quantity)
+    useEffect(() => {
+        setProductQuantity(quantity)
+    }, [products])
 
 
     return (

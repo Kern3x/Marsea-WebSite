@@ -1,6 +1,6 @@
 import requests
 
-from config import config
+from ..config import config
 
 
 base_config = config.get("base")

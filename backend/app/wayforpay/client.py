@@ -4,7 +4,7 @@ import time
 import hashlib
 from typing import Dict, Any
 
-from config import config
+from backend.app.config import config
 
 
 base_config = config.get("base")

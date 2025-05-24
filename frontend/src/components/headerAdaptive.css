@@ -1,0 +1,18 @@
+@media screen and (min-width: 375px) and (max-width: 768px){
+    .main .header {
+        transform: translateY(0) !important;
+    }
+    .main_menu_basket{
+        display: none;
+    }
+    .header {
+        height: 71px;
+        padding: 20px;
+    }
+    .logo_block{
+        height: 100%;
+    }
+    .logo_block img{
+        height: 100%;
+    }
+}

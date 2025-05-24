@@ -14,6 +14,7 @@ import ProductCardBig from "../components/ProductCardBig";
 import Header from "../components/Header";
 import BasketElement from "../basket/BasketElement";
 import CartContext from "../CartContext";
+import "./mainPageAdaptive.css"
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
 
@@ -112,7 +113,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         glow.detox.sleep.focus - без цукру, без лактози, без глютену.
                         ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
                     </div>
-                    <div className="bars_block_products">
+                  <div className = "for_over">  <div className="bars_block_products">
 
                         {bars.map((e) =>
                             <ProductCard
@@ -125,7 +126,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                                 setProducts={setProducts}
                             />
                         )}
-                    </div>
+                    </div></div>
                 </div>
                 <div className="marsea_line">
                     <div className="line_images">
@@ -171,6 +172,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         Сублімовані фрукти — максимум користі, мінімум зусиль
                         .Додавай у смузі, йогурт або воду — і отримуй результат.
                     </div>
+                    <div className = "for_over">
                     <div className="powder_block_products">
                         {powders.map((e) =>  <ProductCard
                             namee={e.name}
@@ -182,6 +184,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                             setProducts={setProducts}
                         />)}
 
+                    </div>
                     </div>
                 </div>
                 <div className="beauty_block">
@@ -237,6 +240,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         Функціональний напій, що поєднує давні традиції й сучасний ритм життя.
                         Для тих, хто обирає користь без компромісів у смаку.
                     </div>
+                    <div className = "for_over">
                     <div className="kombucha_block_products">
                         {kombucha.map((e) =>
                             <ProductCard
@@ -250,6 +254,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                             />
                         )}
 
+                    </div>
                     </div>
                 </div>
                 <a name="showbox"></a>
@@ -277,6 +282,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         сублімовані порошки в наборі - більше, ніж просто добавка. зберігаємо смак
                         природи у великому форматі, щоб наповнювати твоє тіло корисним щодня.
                     </div>
+                    <div className = "for_over">
                     <div className="set_block_products">
                         {sets.map((e) =>  <ProductCard
                             namee={e.name}
@@ -288,6 +294,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                             setProducts={setProducts}
                         />)}
 
+                    </div>
                     </div>
                 </div>
             </div>

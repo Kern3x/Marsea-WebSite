@@ -4,6 +4,7 @@ import logo from "./images/logo.svg"
 import basket from "./images/basket.svg"
 import BasketElement from "../basket/BasketElement";
 import CartContext from "../CartContext";
+import "./headerAdaptive.css"
     const Header = () => {
 
 
@@ -34,7 +35,7 @@ import CartContext from "../CartContext";
         }, [products]);
         return (
             <div className={`header ${showHeader ? "visible" : ""}`}>
-                <div>
+                <div className = "logo_block">
                     <a href = "/">
                 <img src = {logo} alt = ""/>
                     </a>

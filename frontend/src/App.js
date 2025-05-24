@@ -1,5 +1,6 @@
 import './App.css';
 import {href, Route, Routes} from "react-router-dom";
+import CartContext from "./CartContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainPage from "./mainPage/mainPage";
@@ -20,6 +21,7 @@ import set1 from "./mainPage/images/set1.png";
 import set2 from "./mainPage/images/set2.png";
 import set3 from "./mainPage/images/set3.png";
 import beautyCombo from "./mainPage/images/beautyCombo.png";
+import {useState} from "react";
 
 function App() {
     const bars =
@@ -199,16 +201,22 @@ function App() {
 
     }]
     const pages = [...bars, ...powders, ...kombucha, ...sets, ...beautyKombo]
+    const [products, setProducts] = useState(() => {
+        const saved = localStorage.getItem("cart");
+        return saved ? JSON.parse(saved) : [];
+    });
+
     return (
         <div className="App">
-
+            <CartContext.Provider value={{ products, setProducts }}>
             <Routes>
-                {pages.map((e) => <Route path={e.href} element={<PageProduct price={e.price} image={e.image} description={e.description} namee={e.name} bars={bars} phrase={e.phrase} composition = {e.composition} aboutProduct = {e.aboutProduct} lastPhrase = {e.lastPhrase}/>}/>
+                {pages.map((e) => <Route path={e.href} element={<PageProduct price={e.price} image={e.image} description={e.description} namee={e.name} bars={bars} phrase={e.phrase} composition = {e.composition} aboutProduct = {e.aboutProduct} lastPhrase = {e.lastPhrase} products={products} setProducts={setProducts}/>}/>
                 )}
                 <Route index path="/" element={<MainPage bars={bars} kombucha={kombucha} powders={powders} sets={sets} beautyKombo = {beautyKombo}/>}/>
                 <Route path="/basket" element={<Basket bars = {bars}/>}/>
             </Routes>
             <Footer/>
+            </CartContext.Provider>
         </div>
     );
 }

@@ -57,3 +57,9 @@ button{
     text-transform: uppercase;
 
 }
+
+.all_products_basket{
+    height: auto;
+    max-height: 70vh;
+    overflow-y: scroll;
+}

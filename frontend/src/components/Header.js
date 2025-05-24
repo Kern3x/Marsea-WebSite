@@ -1,10 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import "./header.css"
 import logo from "./images/logo.svg"
 import basket from "./images/basket.svg"
 import BasketElement from "../basket/BasketElement";
-    const Header = ({products, setProducts}) => {
+import CartContext from "../CartContext";
+    const Header = () => {
 
+
+        const { products, setProducts } = useContext(CartContext);
+        console.log(products)
         const [products1, setProducts1] = useState(0)
 
         const [showHeader, setShowHeader] = useState(false);
@@ -12,16 +16,21 @@ import BasketElement from "../basket/BasketElement";
         useEffect(() => {
             const onScroll = () => {
                 setShowHeader(window.pageYOffset >= 70);
+                if (window.pageYOffset < 70){
+                    document.querySelector(".cart_modal_h").classList.remove("dis_block")
+
+                }
+
             };
             window.addEventListener("scroll", onScroll);
             return () => window.removeEventListener("scroll", onScroll);
         }, []);
 
         useEffect(() => {
-            if (Array.isArray(products)) {
+
                 setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0));
                 localStorage.setItem("cart", JSON.stringify(products));
-            }
+
         }, [products]);
         return (
             <div className={`header ${showHeader ? "visible" : ""}`}>
@@ -45,15 +54,15 @@ import BasketElement from "../basket/BasketElement";
                         }}><img src={basket} alt=""/></a>
                         <div className="cart_modal_h">
                             <div className="cart_modal_text">Деталі замовлення</div>
-                            {products?.length || 0 < 1 ? <>
+                            {Array.isArray(products) && products.length < 1 ? <>
                                     <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
                                     <hr/>
                                 </> :
-                                <>{products.map((e) =>
+                                <> <div className = "all_products_basket">{products.map((e) =>
                                     <BasketElement image={e.image} namee={e.namee} price={e.price}
                                                    setProducts={setProducts} products={products}
                                                    quantity={e.quantity}/>
-                                )}
+                                )}</div>
                                     <div className="summ_products">
                                         <div>ВСЬОГО</div>
                                         <div>{products1} грн.</div>

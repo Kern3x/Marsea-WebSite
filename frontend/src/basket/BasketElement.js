@@ -43,6 +43,10 @@ const BasketElement = ({image, price, namee, setProducts, products, quantity}) =
                             })
                             let b = JSON.parse(localStorage.getItem("cart"))
                             b[a].quantity = productQuantity -1
+                            if (b[a].quantity === 0){
+                                b[a].quantity = 1
+                            }
+
                             localStorage.setItem("cart", JSON.stringify(b))
                             setProducts(JSON.parse(localStorage.getItem("cart")))
                         }}/>

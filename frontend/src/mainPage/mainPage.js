@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import "./mainPageStyle.css"
 import main_banner from "./images/main_banner.png"
 import basket from "../components/images/basket.svg";
@@ -13,13 +13,11 @@ import fish_showbox from "./images/fish_showbox.svg"
 import ProductCardBig from "../components/ProductCardBig";
 import Header from "../components/Header";
 import BasketElement from "../basket/BasketElement";
+import CartContext from "../CartContext";
 
-const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
-    const [products, setProducts] = useState(() => {
-        const saved = localStorage.getItem("cart");
-        return saved ? JSON.parse(saved) : [];
-    });
+const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
 
+    const { products, setProducts } = useContext(CartContext);
     const [products1, setProducts1] = useState(0)
 
 
@@ -59,11 +57,11 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                                                 <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
                                                 <hr/>
                                             </> :
-                                            <>{products.map((e) =>
+                                            <><div className = "all_products_basket">{products.map((e) =>
                                                 <BasketElement image={e.image} namee={e.namee} price={e.price}
                                                                setProducts={setProducts} products={products}
                                                                quantity={e.quantity}/>
-                                            )}
+                                            )}</div>
                                                 <div className="summ_products">
                                                     <div>ВСЬОГО</div>
                                                     <div>{products1} грн.</div>
@@ -174,12 +172,14 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                         .Додавай у смузі, йогурт або воду — і отримуй результат.
                     </div>
                     <div className="powder_block_products">
-                        {powders.map((e) => <ProductCard
+                        {powders.map((e) =>  <ProductCard
                             namee={e.name}
                             description={e.description}
                             image={e.image}
                             price={e.price}
                             href={e.href}
+                            products={products}
+                            setProducts={setProducts}
                         />)}
 
                     </div>
@@ -197,12 +197,14 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                     </div>
                     <div className="beauty_block_products">
 
-                        {beautyKombo.map((e) => <ProductCard
+                        {beautyKombo.map((e) =>  <ProductCard
                             namee={e.name}
                             description={e.description}
                             image={e.image}
                             price={e.price}
                             href={e.href}
+                            products={products}
+                            setProducts={setProducts}
                         />)}
                     </div>
                 </div>
@@ -243,6 +245,8 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                                 image={e.image}
                                 price={e.price}
                                 href={e.href}
+                                products={products}
+                                setProducts={setProducts}
                             />
                         )}
 
@@ -274,12 +278,14 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo}) => {
                         природи у великому форматі, щоб наповнювати твоє тіло корисним щодня.
                     </div>
                     <div className="set_block_products">
-                        {sets.map((e) => <ProductCard
+                        {sets.map((e) =>  <ProductCard
                             namee={e.name}
                             description={e.description}
                             image={e.image}
                             price={e.price}
                             href={e.href}
+                            products={products}
+                            setProducts={setProducts}
                         />)}
 
                     </div>

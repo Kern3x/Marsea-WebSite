@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import "./pageProduct.css"
 import ProductCard from "../components/ProductCard";
 import ProductPageCard from "./ProductPageCard";
@@ -8,19 +8,36 @@ import bar1 from "../components/images/bar1.png";
 import bar2 from "../mainPage/images/detoxbar.png";
 import bar3 from "../mainPage/images/sleepbar.png";
 import bar4 from "../mainPage/images/focusbar.png";
-const PageProduct = ({image, description, namee, price, bars, phrase, aboutProduct, lastPhrase, composition}) => {
+import CartContext from "../CartContext";
+const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProduct, lastPhrase, composition}) => {
 
+    const { products, setProducts } = useContext(CartContext);
+    const addToCart1 = () => {
+        console.log(products)
+        const updatedCart = [...products];
+        const index = updatedCart.findIndex(item => item.namee === namee);
+
+        if (index !== -1) {
+            updatedCart[index].quantity += 1;
+        } else {
+
+            updatedCart.push({ image, namee, price, quantity: 1 });
+        }
+
+        setProducts(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
     return (
         <>
             <Header/>
 
 
-        <div className = "page_product">
+            <div className = "page_product">
             <div className = "breadcrumbs">
                 <a href = "/">ГОЛОВНА</a> / {namee}
             </div>
             <div className = "product_desc">
-                <ProductPageCard image={image} price={price} description={description} namee={namee}/>
+                <ProductPageCard image={image} price={price} description={description} namee={namee} setProducts={setProducts} products={products}/>
                 <div className = "product_desc_main">
                     <div className = "red_text">{namee}</div>
                     <div className = "main_desc_product">{phrase}</div>
@@ -34,7 +51,7 @@ const PageProduct = ({image, description, namee, price, bars, phrase, aboutProdu
                         <br/>
                         <br/>
                         {lastPhrase}</div>
-                    <button className = "order_button">
+                    <button className = "order_button" onClick={addToCart1}>
                         Замовити
                     </button>
                 </div>

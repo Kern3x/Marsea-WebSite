@@ -3,6 +3,7 @@ import "./productCard.css"
 import addToCart from "./images/addToCart.svg"
 const ProductCard = ({image, description, namee, price, href, setProducts, products}) => {
     const addToCart1 = () => {
+        console.log(products)
         const updatedCart = [...products];
         const index = updatedCart.findIndex(item => item.namee === namee);
 

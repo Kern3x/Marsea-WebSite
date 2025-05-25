@@ -10,7 +10,8 @@ from app.wayforpay.client import (
 )
 from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
 
-app = FastAPI()
+
+app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
 
 origins = [
     "http://localhost:3000",

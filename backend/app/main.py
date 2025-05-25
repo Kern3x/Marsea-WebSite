@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.tg_api_helper import TelegramAPIHelper
 from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
 from app.wayforpay.client import generate_payment_link, create_signature
-
+import os
 
 app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
 tg_api = TelegramAPIHelper()
@@ -67,4 +67,4 @@ async def wayforpay_callback(request: Request):
 
 @app.get("/cash_order")
 async def cash_order(request: Request):
-    return {"status", "Success!"}
+    return {"status", os.path.join(os.path.dirname(__file__), '.env')}

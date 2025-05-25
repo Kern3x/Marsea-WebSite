@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 
-@app.post("/api/pay")
+@app.post("/pay")
 def create_payment(payload: PaymentRequest):
     """
     Генерація платіжного посилання
@@ -35,7 +35,7 @@ def create_payment(payload: PaymentRequest):
     return link_data
 
 
-@app.post("/api/callback")
+@app.post("/callback")
 async def wayforpay_callback(request: Request):
     """
     Обробка callback від Wayforpay

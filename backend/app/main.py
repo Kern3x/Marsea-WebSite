@@ -7,7 +7,7 @@ from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
 from app.wayforpay.client import generate_payment_link, create_signature
 
 
-app = FastAPI(root_path="/api")
+app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
 tg_api = TelegramAPIHelper()
 
 origins = [
@@ -67,6 +67,6 @@ async def wayforpay_callback(request: Request):
     return {"status": "pending", "message": "Waiting for payment"}
 
 
-@app.get("/api/cash_order")
+@app.get("/cash_order")
 async def cash_order(request: Request):
     return {"status", "Success!"}

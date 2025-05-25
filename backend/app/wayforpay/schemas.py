@@ -1,14 +1,32 @@
-from typing import Optional
-
 from pydantic import BaseModel
+
+from typing import Optional, Literal, List
+
+
+class CartItem(BaseModel):
+    name: str
+    price: float
+    quantity: int
+
+
+class DeliveryInfo(BaseModel):
+    method: Literal["np_branch", "np_courier"]
+    region: str
+    city: str
+    warehouse: Optional[str] = None  # для np_branch
+    address: Optional[str] = None  # для np_courier
 
 
 class PaymentRequest(BaseModel):
-    order_reference: str
     amount: float
     currency: str
-    product_name: str
+    cart: List[CartItem]
+
+    client_name: str
     client_phone: Optional[str] = None
+    client_email: Optional[str] = None
+    comment: Optional[str] = None
+    delivery: DeliveryInfo
 
 
 class WayForPayCallback(BaseModel):

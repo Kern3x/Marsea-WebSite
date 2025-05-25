@@ -3,7 +3,8 @@ import os
 from dotenv import load_dotenv
 
 
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+DIR_NAME = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(DIR_NAME)
 
 
 class BaseConfig:

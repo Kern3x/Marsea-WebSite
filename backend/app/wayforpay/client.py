@@ -2,7 +2,7 @@ import hmac
 import uuid
 import time
 import hashlib
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from ..config import config
 
@@ -10,36 +10,38 @@ from ..config import config
 base_config = config.get("base")
 
 
-def generate_order_reference():
+def create_signature(data: List[str | float | int]) -> str:
+    joined = ";".join(map(str, data))
+    return hmac.new(
+        base_config.MERCHANT_SECRET.encode(), joined.encode(), hashlib.md5
+    ).hexdigest()
+
+
+def generate_order_reference() -> str:
     return str(uuid.uuid4())
 
 
-def create_signature(data: list) -> str:
-    """
-    Створення підпису для Wayforpay
-    """
-    joined = ";".join(str(i) for i in data)
-    sign = hmac.new(
-        base_config.MERCHANT_SECRET.encode("utf-8"), joined.encode("utf-8"), hashlib.md5
-    ).hexdigest()
-    return sign
+def generate_payment_link(data: Dict[str, Any]) -> Dict[str, Any]:
+    order_reference = data.get("order_reference") or generate_order_reference()
+    order_date = int(time.time())
 
-
-def generate_payment_link(data: Dict[str, Any]) -> Dict:
-    """
-    Генерує форму оплати Wayforpay
-    """
-    order_reference = generate_order_reference()
+    amount = data["amount"]
+    currency = data["currency"]
+    client_phone = data.get("client_phone", "")
+    client_email = data.get("client_email", "")
 
     payment_data = {
         "merchantAccount": base_config.MERCHANT_ACCOUNT,
         "merchantDomainName": base_config.WEBSITE_DOMAIN,
         "orderReference": order_reference,
-        "orderDate": int(time.time()),
-        "currency": data["currency"],
-        "productPrice": [data["amount"]],
-        "clientPhone": data["client_phone"],
-        "clientEmail": data.get("client_email", ""),
+        "orderDate": order_date,
+        "amount": amount,
+        "currency": currency,
+        "productName": ["Оплата товарів MARSEA"],
+        "productPrice": [amount],
+        "productCount": [1],
+        "clientPhone": client_phone,
+        "clientEmail": client_email,
         "returnUrl": base_config.RETURN_URL,
         "serviceUrl": base_config.CALLBACK_URL,
     }
@@ -48,10 +50,14 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict:
         payment_data["merchantAccount"],
         payment_data["merchantDomainName"],
         payment_data["orderReference"],
-        str(payment_data["orderDate"]),
+        payment_data["orderDate"],
+        payment_data["amount"],
         payment_data["currency"],
-        str(payment_data["productPrice"][0]),
+        payment_data["productName"][0],
+        payment_data["productCount"][0],
+        payment_data["productPrice"][0],
     ]
 
     payment_data["merchantSignature"] = create_signature(signature_data)
+
     return {"url": base_config.PAYMENT_URL, "method": "POST", "params": payment_data}

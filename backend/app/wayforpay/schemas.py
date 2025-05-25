@@ -28,6 +28,8 @@ class PaymentRequest(BaseModel):
     comment: Optional[str] = None
     delivery: DeliveryInfo
 
+    payment_method: Literal["card", "cod"]  # ДОДАНО
+
 
 class WayForPayCallback(BaseModel):
     orderReference: str

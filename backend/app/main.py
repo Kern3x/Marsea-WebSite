@@ -32,8 +32,17 @@ pending_orders: dict[str, dict] = {}
 
 @app.post("/pay")
 async def create_payment(payload: PaymentRequest):
-    order_ref = generate_order_reference()
+    if payload.payment_method == "cod":
+        msg = tg_api.build_telegram_message(order_ref, payload.model_dump())
 
+        tg_api.send_message(msg)
+
+        return {
+            "status": "cod_confirmed",
+            "message": "Замовлення прийнято, сплатите при отриманні",
+        }
+
+    order_ref = generate_order_reference()
     pending_orders[order_ref] = payload.model_dump()
 
     payment_data = generate_payment_link(
@@ -70,34 +79,16 @@ async def wayforpay_callback(request: Request):
         order = pending_orders.get(order_ref)
 
         if not order:
-            return {"status": "error", "message": "Order not found"}
+            return JSONResponse(
+                status_code=404,
+                content={"status": "error", "message": "Order not found"},
+            )
 
-        # Формування повідомлення
-        cart_lines = "\n".join(
-            f"- {item['name']} x {item['quantity']} = {item['price'] * item['quantity']} грн"
-            for item in order["cart"]
-        )
+        order.setdefault("payment_method", "card")
 
-        delivery = order["delivery"]
-        delivery_info = (
-            f"НП (відділення): {delivery['region']}, {delivery['city']}, {delivery['warehouse']}"
-            if delivery["method"] == "np_branch"
-            else f"НП (курʼєр): {delivery['region']}, {delivery['city']}, {delivery['address']}"
-        )
-
-        msg = (
-            f"✅ НОВЕ ЗАМОВЛЕННЯ\n\n"
-            f"🔹 Номер замовлення: {order_ref}\n"
-            f"👤 Імʼя: {order['client_name']}\n"
-            f"📞 Телефон: {order['client_phone']}\n"
-            f"📧 Email: {order.get('client_email', '—')}\n"
-            f"💬 Коментар: {order.get('comment', '—')}\n\n"
-            f"🛒 Товари:\n{cart_lines}\n\n"
-            f"🚚 Доставка: {delivery_info}\n"
-            f"💰 Сума: {callback.amount} {callback.currency}"
-        )
-
+        msg = tg_api.build_telegram_message(order_ref, order)
         tg_api.send_message(msg)
+
         pending_orders.pop(order_ref, None)
 
         return {"status": "success", "message": "Payment confirmed"}

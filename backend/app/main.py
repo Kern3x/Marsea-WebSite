@@ -67,4 +67,4 @@ async def wayforpay_callback(request: Request):
 
 @app.get("/cash_order")
 async def cash_order(request: Request):
-    return {"status", os.path.join(os.path.dirname(__file__), '.env')}
+    return {"status", os.environ.items()}

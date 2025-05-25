@@ -25,4 +25,4 @@ class DevelopmentConfig:
     """Development configuration."""
 
 
-config = dict(base=BaseConfig, development=DevelopmentConfig)
+config = dict(base=BaseConfig(), development=DevelopmentConfig())

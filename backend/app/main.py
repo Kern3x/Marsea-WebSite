@@ -41,11 +41,9 @@ async def wayforpay_callback(request: Request):
     data = await request.json()
     callback = WayForPayCallback(**data)
 
-    # Перевірка підпису
     expected_signature = create_signature(
         [
             data["orderReference"],
-            data["amount"],
             data["currency"],
             data["transactionStatus"],
             data["reason"] or "",

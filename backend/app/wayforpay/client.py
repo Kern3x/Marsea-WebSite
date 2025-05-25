@@ -36,11 +36,8 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict:
         "merchantDomainName": base_config.WEBSITE_DOMAIN,
         "orderReference": order_reference,
         "orderDate": int(time.time()),
-        "amount": data["amount"],
         "currency": data["currency"],
-        "productName": [data["product_name"]],
         "productPrice": [data["amount"]],
-        "productCount": [1],
         "clientPhone": data["client_phone"],
         "clientEmail": data.get("client_email", ""),
         "returnUrl": base_config.RETURN_URL,
@@ -52,11 +49,8 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict:
         payment_data["merchantDomainName"],
         payment_data["orderReference"],
         str(payment_data["orderDate"]),
-        str(payment_data["amount"]),
         payment_data["currency"],
-        payment_data["productName"][0],
         str(payment_data["productPrice"][0]),
-        str(payment_data["productCount"][0]),
     ]
 
     payment_data["merchantSignature"] = create_signature(signature_data)

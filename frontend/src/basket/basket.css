@@ -294,7 +294,7 @@
 .css-18wnpq2-control{
     border-color: #CCD7E2 !important;
 }
-@media screen and (min-width: 375px) and (max-width: 768px){
+@media screen and  (max-width: 768px){
     .details_text {
         font-family: Cormorant;
         font-weight: 400;

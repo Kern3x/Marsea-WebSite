@@ -126,7 +126,7 @@ hr{
     text-align: center;
 
 }
-@media screen and (min-width: 375px) and (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .burger_menu{
         width: 18px;
         height: 12px;

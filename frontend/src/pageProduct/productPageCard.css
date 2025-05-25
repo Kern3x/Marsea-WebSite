@@ -50,7 +50,7 @@
 .product_desc{
     display: flex;
 }
-@media screen and (min-width: 375px) and (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .product_short_info {
         margin: 7px 10px 3px 10px !important;
         height: 64px;

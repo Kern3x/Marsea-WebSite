@@ -24,6 +24,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
 
 
     useEffect(() => {
+
         setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0))
 
         localStorage.setItem("cart", JSON.stringify(products))

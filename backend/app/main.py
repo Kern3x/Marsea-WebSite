@@ -67,4 +67,4 @@ async def wayforpay_callback(request: Request):
 
 @app.get("/cash_order")
 async def cash_order(request: Request):
-    return {"status", dict(os.environ)}
+    return {"status": "ok", "env": dict(os.environ)}  

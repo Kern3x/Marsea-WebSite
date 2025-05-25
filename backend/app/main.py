@@ -69,6 +69,6 @@ async def wayforpay_callback(request: Request):
     return {"status": "pending", "message": "Waiting for payment"}
 
 
-@app.post("/api/cash_order")
+@app.get("/api/cash_order")
 async def cash_order(request: Request):
     return {"status", "Success!"}

@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import "./mainPageStyle.css"
 import main_banner from "./images/main_banner.png"
 import basket from "../components/images/basket.svg";
+import mob_cart from "../components/images/mob_cart.svg";
 import ProductCard from "../components/ProductCard";
 import marseaLine from "../components/images/marseaLine.svg"
 import logo from "../components/images/logo.svg"
@@ -16,9 +17,9 @@ import BasketElement from "../basket/BasketElement";
 import CartContext from "../CartContext";
 import "./mainPageAdaptive.css"
 
-const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
+const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
 
-    const { products, setProducts } = useContext(CartContext);
+    const {products, setProducts} = useContext(CartContext);
     const [products1, setProducts1] = useState(0)
 
 
@@ -30,8 +31,49 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
     }, [products])
     //console.log(JSON.parse(localStorage.getItem("cart")).length)
     return (
-        <div className = "main">
+        <div className="main">
+            <div className = "modal_cart_allscreen" onClick={(e) => {
+                e.currentTarget.classList.toggle("opacity_mob")
+            }}>
+                <div className="cart_modal_mob" onClick={(e) => {
+                    e.stopPropagation()
+                }}>
+                <div className="cart_modal_text">Деталі замовлення</div>
+                {products.length < 1 ? <>
+                        <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
+                        <hr/>
+                    </> :
+                    <>
+                        <div className="all_products_basket">{products.map((e) =>
+                            <BasketElement image={e.image} namee={e.namee} price={e.price}
+                                           setProducts={setProducts} products={products}
+                                           quantity={e.quantity}/>
+                        )}</div>
+                        <div className="summ_products">
+                            <div>ВСЬОГО</div>
+                            <div>{products1} грн.</div>
+                        </div>
+                    </>
+                }
 
+                <a href="/basket">
+                    <button className="to_cart">
+                        до кошика
+                    </button>
+                </a>
+                <button className="button_close_cart" onClick={() => {
+                    document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
+                }}>
+                    закрити
+                </button>
+            </div>
+            </div>
+
+
+
+            <img src={mob_cart} alt="" className = "mob_cart_btn" onClick = {() => {
+                document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
+            }} />
             <Header setProducts={setProducts} products={products}/>
             <div className="main_page">
                 <div className="main_banner_block">
@@ -50,7 +92,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                                 </div>
                                 <div className="basket_block">
                                     <a onClick={() => {
-                                        document.querySelector(".cart_modal").style.cssText = "display:block"
+                                        document.querySelector(".cart_modal").classList.toggle("opacity_t")
                                     }}><img src={basket} alt=""/></a>
                                     <div className="cart_modal">
                                         <div className="cart_modal_text">Деталі замовлення</div>
@@ -58,11 +100,12 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                                                 <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
                                                 <hr/>
                                             </> :
-                                            <><div className = "all_products_basket">{products.map((e) =>
-                                                <BasketElement image={e.image} namee={e.namee} price={e.price}
-                                                               setProducts={setProducts} products={products}
-                                                               quantity={e.quantity}/>
-                                            )}</div>
+                                            <>
+                                                <div className="all_products_basket">{products.map((e) =>
+                                                    <BasketElement image={e.image} namee={e.namee} price={e.price}
+                                                                   setProducts={setProducts} products={products}
+                                                                   quantity={e.quantity}/>
+                                                )}</div>
                                                 <div className="summ_products">
                                                     <div>ВСЬОГО</div>
                                                     <div>{products1} грн.</div>
@@ -76,7 +119,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                                             </button>
                                         </a>
                                         <button className="button_close_cart" onClick={() => {
-                                            document.querySelector(".cart_modal").style.cssText = "display:none"
+                                            document.querySelector(".cart_modal").classList.toggle("opacity_t")
                                         }}>
                                             закрити
                                         </button>
@@ -94,11 +137,11 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                                 а не компромісом.
                             </div>
 
-                                <button className="banner_button">
-                                    <a href="/basket">
+                            <button className="banner_button">
+                                <a href="/basket">
                                     Замовити
-                                    </a>
-                                </button>
+                                </a>
+                            </button>
 
                         </div>
                     </div>
@@ -113,20 +156,22 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         glow.detox.sleep.focus - без цукру, без лактози, без глютену.
                         ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
                     </div>
-                  <div className = "for_over">  <div className="bars_block_products">
+                    <div className="for_over">
+                        <div className="bars_block_products">
 
-                        {bars.map((e) =>
-                            <ProductCard
-                                namee={e.name}
-                                description={e.description}
-                                image={e.image}
-                                price={e.price}
-                                href={e.href}
-                                products={products}
-                                setProducts={setProducts}
-                            />
-                        )}
-                    </div></div>
+                            {bars.map((e) =>
+                                <ProductCard
+                                    namee={e.name}
+                                    description={e.description}
+                                    image={e.image}
+                                    price={e.price}
+                                    href={e.href}
+                                    products={products}
+                                    setProducts={setProducts}
+                                />
+                            )}
+                        </div>
+                    </div>
                 </div>
                 <div className="marsea_line">
                     <div className="line_images">
@@ -142,11 +187,13 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
                         </div>
-                        <a href="/basket" className = "marsi_a"> <button className="button_buy marsi">
+                        <a href="/basket" className="marsi_a">
+                            <button className="button_buy marsi">
 
                                 Замовити
 
-                        </button> </a>
+                            </button>
+                        </a>
                     </div>
                 </div>
                 <a name="about"></a>
@@ -172,21 +219,22 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         Сублімовані фрукти — максимум користі, мінімум зусиль
                         .Додавай у смузі, йогурт або воду — і отримуй результат.
                     </div>
-                    <div className = "for_over">
-                    <div className="powder_block_products">
-                        {powders.map((e) =>  <ProductCard
-                            namee={e.name}
-                            description={e.description}
-                            image={e.image}
-                            price={e.price}
-                            href={e.href}
-                            products={products}
-                            setProducts={setProducts}
-                        />)}
+                    <div className="for_over">
+                        <div className="powder_block_products">
+                            {powders.map((e) => <ProductCard
+                                namee={e.name}
+                                description={e.description}
+                                image={e.image}
+                                price={e.price}
+                                href={e.href}
+                                products={products}
+                                setProducts={setProducts}
+                            />)}
 
-                    </div>
+                        </div>
                     </div>
                 </div>
+                <a name="beautycombo"></a>
                 <div className="beauty_block">
                     <img src={beautyCat} alt="" className="beautyCat"/>
                     <img src={beautyLama} alt="" className="beautyLama"/>
@@ -200,7 +248,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                     </div>
                     <div className="beauty_block_products">
 
-                        {beautyKombo.map((e) =>  <ProductCard
+                        {beautyKombo.map((e) => <ProductCard
                             namee={e.name}
                             description={e.description}
                             image={e.image}
@@ -225,13 +273,16 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
                         </div>
-                        <a href="/basket" className = "marsi_a"> <button className="button_buy marsi">
+                        <a href="/basket" className="marsi_a">
+                            <button className="button_buy marsi">
 
-                            Замовити
+                                Замовити
 
-                        </button> </a>
+                            </button>
+                        </a>
                     </div>
                 </div>
+                <a name="kombucha"></a>
                 <div className="kombucha_block">
                     <div className="kombucha_block_h1">
                         комбуча
@@ -240,21 +291,21 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         Функціональний напій, що поєднує давні традиції й сучасний ритм життя.
                         Для тих, хто обирає користь без компромісів у смаку.
                     </div>
-                    <div className = "for_over">
-                    <div className="kombucha_block_products">
-                        {kombucha.map((e) =>
-                            <ProductCard
-                                namee={e.name}
-                                description={e.description}
-                                image={e.image}
-                                price={e.price}
-                                href={e.href}
-                                products={products}
-                                setProducts={setProducts}
-                            />
-                        )}
+                    <div className="for_over">
+                        <div className="kombucha_block_products">
+                            {kombucha.map((e) =>
+                                <ProductCard
+                                    namee={e.name}
+                                    description={e.description}
+                                    image={e.image}
+                                    price={e.price}
+                                    href={e.href}
+                                    products={products}
+                                    setProducts={setProducts}
+                                />
+                            )}
 
-                    </div>
+                        </div>
                     </div>
                 </div>
                 <a name="showbox"></a>
@@ -282,19 +333,19 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo, }) => {
                         сублімовані порошки в наборі - більше, ніж просто добавка. зберігаємо смак
                         природи у великому форматі, щоб наповнювати твоє тіло корисним щодня.
                     </div>
-                    <div className = "for_over">
-                    <div className="set_block_products">
-                        {sets.map((e) =>  <ProductCard
-                            namee={e.name}
-                            description={e.description}
-                            image={e.image}
-                            price={e.price}
-                            href={e.href}
-                            products={products}
-                            setProducts={setProducts}
-                        />)}
+                    <div className="for_over">
+                        <div className="set_block_products">
+                            {sets.map((e) => <ProductCard
+                                namee={e.name}
+                                description={e.description}
+                                image={e.image}
+                                price={e.price}
+                                href={e.href}
+                                products={products}
+                                setProducts={setProducts}
+                            />)}
 
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>

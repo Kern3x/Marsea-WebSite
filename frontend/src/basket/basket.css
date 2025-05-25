@@ -30,7 +30,9 @@
     width: 84px;
 }
 .product_image_basket img{
-    width: 100%;
+    max-width: 80px;
+    max-height: 90%;
+    width: auto;
 }
 .product_quantity{
     display: grid;
@@ -291,4 +293,141 @@
 }
 .css-18wnpq2-control{
     border-color: #CCD7E2 !important;
+}
+@media screen and (min-width: 375px) and (max-width: 768px){
+    .details_text {
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 100%;
+        text-align: center;
+        text-transform: uppercase;
+
+    }
+    .products_details{
+        padding: 0 20px;
+        align-items: inherit;
+    }
+    .product_image_basket img {
+        width: 72px;
+    }
+    .basket_product_name div{
+        font-family: Wix Madefor Display;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 120%;
+        text-align: center;
+
+    }
+    .order_details_main{
+    margin-top: 0px;
+}
+    .order_form{
+        margin-top: 50px;
+    }
+    .details_quantity {
+        width: 335px;
+    }
+    .basket_details_product {
+        width: -webkit-fill-available;
+
+    }
+    .basket_product {
+        height: 79px;
+    }
+    .order_text {
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 100%;
+        text-align: center;
+        text-transform: uppercase;
+
+    }
+    .order_form {
+        padding: 0 20px;
+    }
+    .form_input {
+        margin-top: 5px;
+        width: 100%;
+        height: 54px;
+        gap: 10px;
+        border-radius: 40px;
+        padding: 20px 15px;
+        border: 1px solid #CCD7E2;
+        font-size: 12px;
+    }
+    .form_textarea {
+        font-family: Wix Madefor Display;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 120%;
+        width: 100%;
+        margin-top: 10px;
+        height: 166px;
+        border-radius: 20px;
+        padding: 20px 15px;
+    }
+    .checkbox_mail{
+    width: 100%;
+    height: 54px;
+    border-radius: 40px;
+    padding: 20px 15px;
+
+    font-family: Wix Madefor Display;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+    color: #18131B;
+    text-align: center;
+}
+    .order_details_main{
+        width: 100%;
+    }
+   .order_form_mail .order_details_main{
+
+        margin-top: 20px;
+    }
+    .order_form_mail {
+        margin-top: 50px;
+    }
+    .css-1saaql2-control, .css-18wnpq2-control{
+        height: 54px;
+        font-size: 12px;
+    }
+    #react-select-2-placeholder{
+        font-size: 12px;
+    }
+    #react-select-3-placeholder{
+        font-size: 12px;
+    }
+    .name_input_curier {
+        font-size: 12px;
+        height: 54px;
+    }
+    .order_button_next {
+        font-family: Montserrat;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 130%;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        padding: 24px;
+
+    }
+    .delivery_type {
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 20px;
+        width: 100%;
+        text-align: center;
+
+        margin-top: 50px;
+    }
+    .payment_input {
+        margin-top: 20px !important;
+    }
+
+
 }

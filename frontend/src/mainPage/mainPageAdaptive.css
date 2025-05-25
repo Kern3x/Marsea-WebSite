@@ -6,6 +6,10 @@
         margin-top: 71px;
         height: 495px;
     }
+    .main_page {
+
+        margin-top: 0;
+    }
     .main_banner{
         display: none;
     }
@@ -223,8 +227,8 @@
     }
     .h1_marsea_line {
         margin-top: 10px;
-        font-family: Wix Madefor Display;
-        width: 100%;
+        font-family: Cormorant, sans-serif;
+        width: 60%;
         font-weight: 600;
         font-size: 14px;
         text-align: center;

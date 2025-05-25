@@ -8,6 +8,7 @@ from app.wayforpay.client import (
     create_signature,
     generate_order_reference,
 )
+from middlewares.wayforpay_guard import WayforpaySignatureGuard
 from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
 
 
@@ -26,12 +27,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(WayforpaySignatureGuard)
+
 tg_api = TelegramAPIHelper()
 pending_orders: dict[str, dict] = {}
 
 
 @app.post("/pay")
-async def create_payment(payload: PaymentRequest):
+async def create_payment(payload: PaymentRequest, request: Request):
+    origin = request.headers.get("origin")
+
+    if origin not in origins:
+        return JSONResponse(status_code=403, content={"detail": "Invalid origin"})
+
     if payload.order_reference and payload.order_reference in pending_orders:
         pending_orders.pop(payload.order_reference)
 

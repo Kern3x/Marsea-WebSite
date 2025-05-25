@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 
-load_dotenv(".env")
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 
 class BaseConfig:
@@ -14,8 +14,6 @@ class BaseConfig:
 
     MERCHANT_ACCOUNT = os.environ.get("MERCHANT_ACCOUNT")
     MERCHANT_SECRET = os.environ.get("MERCHANT_SECRET")
-
-    print("MERCHANT_SECRET from ENV:", os.environ.get("MERCHANT_SECRET"))
 
     WEBSITE_DOMAIN = os.environ.get("WEBSITE_DOMAIN")
     PAYMENT_URL = os.environ.get("PAYMENT_URL")

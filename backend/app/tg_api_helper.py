@@ -25,7 +25,7 @@ class TelegramAPIHelper:
         except Exception:
             return 400
 
-    def build_telegram_message(order_ref: str, data: dict) -> str:
+    def build_telegram_message(self, order_ref: str, data: dict) -> str:
         cart_lines = "\n".join(
             f"- {item['name']} x {item['quantity']} = {item['price'] * item['quantity']} грн"
             for item in data["cart"]

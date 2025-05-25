@@ -7,7 +7,7 @@ from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
 from app.wayforpay.client import generate_payment_link, create_signature
 
 
-app = FastAPI()
+app = FastAPI(root_path="/api")
 tg_api = TelegramAPIHelper()
 
 origins = [

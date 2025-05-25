@@ -8,7 +8,7 @@ from app.wayforpay.client import (
     create_signature,
     generate_order_reference,
 )
-from middlewares.wayforpay_guard import WayforpaySignatureGuard
+from app.middlewares.wayforpay_guard import WayforpaySignatureGuard
 from app.wayforpay.schemas import PaymentRequest, WayForPayCallback
 
 

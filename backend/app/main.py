@@ -32,18 +32,12 @@ pending_orders: dict[str, dict] = {}
 
 @app.post("/pay")
 async def create_payment(payload: PaymentRequest):
+    if payload.order_reference and payload.order_reference in pending_orders:
+        pending_orders.pop(payload.order_reference)
+
     order_ref = generate_order_reference()
 
-    if payload.payment_method == "cod":
-        msg = tg_api.build_telegram_message(order_ref, payload.model_dump())
-
-        tg_api.send_message(msg)
-
-        return {
-            "status": "cod_confirmed",
-            "message": "Замовлення прийнято, сплатите при отриманні",
-        }
-
+    payload.order_reference = order_ref
     pending_orders[order_ref] = payload.model_dump()
 
     payment_data = generate_payment_link(

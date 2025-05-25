@@ -18,6 +18,7 @@ class DeliveryInfo(BaseModel):
 
 
 class PaymentRequest(BaseModel):
+    order_reference: Optional[str] = None
     amount: float
     currency: str
     cart: List[CartItem]

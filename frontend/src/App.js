@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import MainPage from "./mainPage/mainPage";
 import PageProduct from "./pageProduct/pageProduct";
 import Basket from "./basket/Basket";
+import sImage1 from "./components/images/set.png"
 import bar1 from "./components/images/bar1.png";
 import bar2 from "./mainPage/images/detoxbar.png";
 import bar3 from "./mainPage/images/sleepbar.png";
@@ -25,7 +26,7 @@ import inst_mobile from "./components/images/inst_mob_menu.svg"
 import tg_mobile from "./components/images/tg_mob_menu.svg"
 import fish_mobile from "./components/images/fish_mob_menu.svg"
 import cat_mobile from "./components/images/cat_mobile.svg"
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ThankYouPage from "./components/ThankYouPage";
 import OrderSumMin from "./components/OrderSumMin";
@@ -207,12 +208,100 @@ function App() {
         lastPhrase: "Смак фініків і гарбузового насіння, який працює на тебе, коли треба зловити фокус і бути в потоці."
 
     }]
-    const pages = [...bars, ...powders, ...kombucha, ...sets, ...beautyKombo]
+    const showbox = [{
+        name: "Асорті-бокс: 10 батончиків MARSEA",
+        description: " — glow bar, detox bar, sleep bar, focus bar",
+        price: "740",
+        image: sImage1,
+        href: "/showbox",
+        phrase: "",
+        composition: ["3 × Focus Bar — пам’ять, швидкість, продуктивність", "3 × Glow Bar — сяйво шкіри зсередини", "2 × Sleep Bar — м’який вечірній ритуал", "2 × Detox Bar — перезавантаження організму"],
+        aboutProduct: ["Усі смаки в одному боксі", "Вигідніше, ніж купувати окремо", "Суперзручність і економія"],
+        lastPhrase: ""
+
+    }]
+    const pages = [...bars, ...powders, ...kombucha, ...sets, ...beautyKombo, ...showbox]
     const [products, setProducts] = useState(() => {
         const saved = localStorage.getItem("cart");
         return saved ? JSON.parse(saved) : [];
     });
 
+    useEffect(() => {
+        // Пример на фронтенде (например, в файле вашего компонента или скрипта)
+
+
+// Вызовите эту функцию, например, по клику на кнопку
+// <button onclick="initiateWayForPayPayment()">Оплатить</button>
+    }, [])
+    async function initiateWayForPayPayment() {
+        const orderDetails = {
+            amount: 486,
+            currency: 'UAH',
+            productName: ['Оплата товарів MARSEA'],
+            productPrice: [486],
+            productCount: [1],
+            clientPhone: 'fdvfvb',
+            clientEmail: 'fbdfdf',
+            // orderReference: 'e066d7ef-f377-412a-9e03-da0c4711aadb' // Если вы хотите использовать существующий orderReference
+        };
+
+        try {
+            // Отправляем запрос на ваш Node.js бэкенд
+            const response = await fetch('http://localhost:3001/api/pay', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderDetails),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to get payment link from backend');
+            }
+
+            const paymentLinkData = await response.json();
+            console.log('Payment Link Data from Node.js:', paymentLinkData);
+
+            // Формируем и отправляем форму для редиректа на WayForPay
+            const form = document.createElement('form');
+            form.method = paymentLinkData.method; // 'POST'
+            form.action = paymentLinkData.url;   // 'https://secure.wayforpay.com/pay'
+
+            for (const key in paymentLinkData.params) {
+                if (paymentLinkData.params.hasOwnProperty(key)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    // WayForPay ожидает массивы для productName, productPrice, productCount
+                    // Поэтому если это массив, нужно добавить [] к имени поля
+                    if (Array.isArray(paymentLinkData.params[key])) {
+                        // WayForPay может ожидать поля типа "productName[]" или просто "productName"
+                        // В зависимости от их реализации, попробуйте оба варианта
+                        // Для безопасности, лучше генерировать несколько полей с одинаковым именем,
+                        // если это массив для WayForPay.
+                        // Пример:
+                        paymentLinkData.params[key].forEach(item => {
+                            const arrayInput = document.createElement('input');
+                            arrayInput.type = 'hidden';
+                            arrayInput.name = `${key}[]`; // Имя поля с [] для массива
+                            arrayInput.value = item;
+                            form.appendChild(arrayInput);
+                        });
+                    } else {
+                        input.value = paymentLinkData.params[key];
+                        form.appendChild(input);
+                    }
+                }
+            }
+            document.body.appendChild(form);
+            form.submit(); // Перенаправление на страницу оплаты WayForPay
+
+        } catch (error) {
+            console.error('Error initiating payment:', error);
+            alert('Ошибка при инициации платежа: ' + error.message);
+        }
+    }
 
     return (
         <div className="App">
@@ -267,7 +356,7 @@ function App() {
                     <Route path="/basket" element={<Basket bars={bars}/>}/>
                     <Route path="/thankyou" element={<ThankYouPage bars={bars}/>}/>
                 </Routes>
-                <Footer/>
+
             </CartContext.Provider>
         </div>
     );

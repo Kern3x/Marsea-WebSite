@@ -5,7 +5,12 @@
     background: #FCFCFC;
     border-radius: 30px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 
+}
+.product_short_info{
+    margin-top: auto !important;
 }
 .add_to_cart{
     width: 32px;
@@ -199,6 +204,7 @@
     }
     .bars_main_block {
         margin: inherit;
+        margin-bottom: 0;
     }
     .bars_block_h1{
         font-family: Wix Madefor Display;
@@ -250,6 +256,7 @@
     .product_page_card {
         width: 202px;
         height: auto;
+
     }
     .product_desc_main {
         width: 100%;

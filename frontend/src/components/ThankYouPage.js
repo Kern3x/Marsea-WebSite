@@ -6,6 +6,7 @@ import Select from "react-select";
 import ProductCard from "./ProductCard";
 import CartContext from "../CartContext";
 import "./thankyoupage.css"
+import Footer from "./Footer";
 
 const ThankYouPage = ({bars}) => {
     const {products, setProducts} = useContext(CartContext);
@@ -60,28 +61,35 @@ const ThankYouPage = ({bars}) => {
 
                 </div>
 
-                <div className="kombucha_block">
-                    <div className="kombucha_block_h1">схожі товари</div>
-                    <div className="kombucha_block_description">
-                        glow.detox.sleep.focus - без цукру, без лактози, без глютену. ЦЕ НЕ ПРОСТО
-                        ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
+                <div className="bars_main_block">
+
+                    <div className="bars_block_h1">
+                        БАТОНЧИКИ
                     </div>
-                    <div className="kombucha_block_products">
-                        {bars.map((e, i) => (
-                            <ProductCard
-                                key={i}
-                                namee={e.name}
-                                description={e.description}
-                                image={e.image}
-                                price={e.price}
-                                href={e.href}
-                            />
-                        ))}
+                    <div className="bars_block_description">
+                        glow.detox.sleep.focus - без цукру, без лактози, без глютену.
+                        ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
+                    </div>
+                    <div className="for_over">
+                        <div className="bars_block_products">
+
+                            {bars.map((e) =>
+                                <ProductCard
+                                    namee={e.name}
+                                    description={e.description}
+                                    image={e.image}
+                                    price={e.price}
+                                    href={e.href}
+                                    products={products}
+                                    setProducts={setProducts}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
         </> : window.location.href = "/"}
-
+            <Footer />
         </>
     );
 };

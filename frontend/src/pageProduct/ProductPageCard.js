@@ -6,6 +6,8 @@ import CartContext from "../CartContext";
 const ProductPageCard = ({image, description, namee, price, href}) => {
     const { products, setProducts } = useContext(CartContext);
     const addToCart1 = () => {
+
+        document.querySelector(".cart_modal_h").classList.add("opacity_o")
         console.log(products)
         const updatedCart = [...products];
         const index = updatedCart.findIndex(item => item.namee === namee);
@@ -13,11 +15,18 @@ const ProductPageCard = ({image, description, namee, price, href}) => {
         if (index !== -1) {
             updatedCart[index].quantity += 1;
         } else {
-            updatedCart.push({ image, namee, price, quantity: 1 });
+            updatedCart.push({image, namee, price, quantity: 1});
         }
 
         setProducts(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
+        if(window.innerWidth <= 768) {
+
+            document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
+        }else{
+            document.querySelector(".cart_modal_h").classList.add("opacity_o")
+
+        }
     };
 
     return (

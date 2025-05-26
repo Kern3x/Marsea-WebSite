@@ -17,6 +17,7 @@ import BasketElement from "../basket/BasketElement";
 import CartContext from "../CartContext";
 import "./mainPageAdaptive.css"
 import axios from "axios";
+import Footer from "../components/Footer";
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
 
@@ -33,6 +34,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
     }, [products])
     //console.log(JSON.parse(localStorage.getItem("cart")).length)
     return (
+        <>
         <div className="main">
             <div className = "modal_cart_allscreen" onClick={(e) => {
                 e.currentTarget.classList.toggle("opacity_mob")
@@ -58,7 +60,9 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         </>
                     }
 
-                    <a href="/basket">
+                    <a onClick={() => {
+                        products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
+                    }}>
                         <button className="to_cart">
                             до кошика
                         </button>
@@ -92,7 +96,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                     <a href="#showbox">шоубокс</a>
                                     <a href="#set">набори</a>
                                 </div>
-                                <div className="basket_block" style={{overflow:"hidden", position:"relative"}}>
+                                <div className="basket_block" style={{position:"relative"}}>
                                     <a onClick={() => {
                                         document.querySelector(".cart_modal").classList.toggle("opacity_t")
                                     }}><img src={basket} alt=""/></a>
@@ -115,7 +119,9 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                             </>
                                         }
 
-                                        <a href = "/basket">
+                                        <a onClick={() => {
+                                            products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
+                                        }}>
                                             <button className="to_cart">
                                                 до кошика
                                             </button>
@@ -140,7 +146,9 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                             </div>
 
                             <button className="banner_button">
-                                <a href="/basket">
+                                <a onClick={() => {
+                                    products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
+                                }}>
                                     Замовити
                                 </a>
                             </button>
@@ -189,7 +197,9 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
                         </div>
-                        <a href="/basket" className="marsi_a">
+                        <a  onClick={() => {
+                            products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
+                        }} className="marsi_a">
                             <button className="button_buy marsi">
 
                                 Замовити
@@ -275,7 +285,9 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
                         </div>
-                        <a href="/basket" className="marsi_a">
+                        <a  onClick={() => {
+                            products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
+                        }} className="marsi_a">
                             <button className="button_buy marsi">
 
                                 Замовити
@@ -351,8 +363,10 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                     </div>
                 </div>
             </div>
+
         </div>
 
+            <Footer /></>
     );
 };
 

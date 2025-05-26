@@ -16,10 +16,13 @@ const Header = () => {
 
     useEffect(() => {
         const onScroll = () => {
+
             setShowHeader(window.pageYOffset >= 70);
             if (window.pageYOffset < 70) {
-                document.querySelector(".cart_modal_h").classList.remove("dis_block")
+                document.querySelector(".cart_modal_h").classList.remove("opacity_o")
 
+            }else if(window.pageYOffset <= 70){
+                document.querySelector(".cart_modal").classList.remove("opacity_t")
             }
 
         };
@@ -83,7 +86,9 @@ const Header = () => {
                             </>
                         }
 
-                        <a href="/basket">
+                        <a onClick={() => {
+                            products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
+                        }}>
                             <button className="to_cart">
                                 до кошика
                             </button>

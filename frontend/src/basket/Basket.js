@@ -12,6 +12,8 @@ import Select from "react-select";
 import npData from "../np.json";
 import CartContext from "../CartContext";
 import axios from "axios";
+import Footer from "../components/Footer";
+import OrderSumMin from "../components/OrderSumMin";
 
 const customStyles = {
     control: (base) => ({
@@ -103,34 +105,50 @@ const Basket = ({bars}) => {
                 city: selectedCity?.value,
                 ...(deliveryMethod === "np_branch"
                     ? { warehouse: selectedWarehouse?.value }
-                    : { address: `вул. ${street}, буд. ${house}, кв. ${flat}` })
-            },
-            payment_method: paymentMethod
-        };
+                    : { address: 'вул. ${street}, буд. ${house}, кв. ${flat}' })
+    },
+        payment_method: paymentMethod
+    };
 
         axios.post("https://marsea-shop.com/api/pay", payload)
             .then((response) => {
+              //  axios.post("https://secure.wayforpay.com/pay",response.data)
                 const data = response.data;
+                console.log("data :", data);
 
                 if (paymentMethod === "card" && data?.url && data?.params) {
                     const form = document.createElement("form");
                     form.method = "POST";
                     form.action = data.url;
+                    form.target = "_blank";
                     form.style.display = "none";
 
-                    // Добавить каждый параметр как скрытое поле
                     for (const key in data.params) {
-                        if (data.params.hasOwnProperty(key)) {
+                        if (!data.params.hasOwnProperty(key)) continue;
+
+                        const value = data.params[key];
+
+                        // 🔐 Правильна обробка масивів (productName, productPrice, productCount)
+                        if (Array.isArray(value)) {
+                            value.forEach((v) => {
+                                const input = document.createElement("input");
+                                input.type = "hidden";
+                                input.name = key ; // WayforPay сам розпізнає масив
+                                input.value = v;
+                                form.appendChild(input);
+                            });
+                        } else {
                             const input = document.createElement("input");
                             input.type = "hidden";
                             input.name = key;
-                            input.value = data.params[key];
+                            input.value = value;
                             form.appendChild(input);
                         }
                     }
-
                     document.body.appendChild(form);
-                    form.submit(); // это и отправит данные POST-ом
+                    console.log("form:", form);
+
+                   form.submit();  // Тепер можна запускати
                 } else {
                     console.log("Оплата готівкою, данные успешно отправлены", data);
                 }
@@ -154,6 +172,8 @@ const Basket = ({bars}) => {
 
     return (
         <>
+            {products1 < 200 ? <OrderSumMin t = {true}/> : <>
+
             <Header products={products} setProducts={setProducts}/>
             <div className="basket_page">
                 <div className="basket_details">
@@ -329,26 +349,35 @@ const Basket = ({bars}) => {
                     </div>
                 </div>
 
-                <div className="kombucha_block">
-                    <div className="kombucha_block_h1">схожі товари</div>
-                    <div className="kombucha_block_description">
-                        glow.detox.sleep.focus - без цукру, без лактози, без глютену. ЦЕ НЕ ПРОСТО
-                        ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
+                <div className="bars_main_block">
+
+                    <div className="bars_block_h1">
+                        БАТОНЧИКИ
                     </div>
-                    <div className="kombucha_block_products">
-                        {bars.map((e, i) => (
-                            <ProductCard
-                                key={i}
-                                namee={e.name}
-                                description={e.description}
-                                image={e.image}
-                                price={e.price}
-                                href={e.href}
-                            />
-                        ))}
+                    <div className="bars_block_description">
+                        glow.detox.sleep.focus - без цукру, без лактози, без глютену.
+                        ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
+                    </div>
+                    <div className="for_over">
+                        <div className="bars_block_products">
+
+                            {bars.map((e) =>
+                                <ProductCard
+                                    namee={e.name}
+                                    description={e.description}
+                                    image={e.image}
+                                    price={e.price}
+                                    href={e.href}
+                                    products={products}
+                                    setProducts={setProducts}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+            <Footer /></>
+}
         </>
     );
 };

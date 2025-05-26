@@ -11,11 +11,16 @@ import bar4 from "../mainPage/images/focusbar.png";
 import CartContext from "../CartContext";
 import BasketElement from "../basket/BasketElement";
 import mob_cart from "../components/images/mob_cart.svg";
+import footer_logo from "../components/images/logo_footer.svg";
+import insta from "../mainPage/images/inst.svg";
+import telegram from "../mainPage/images/telegram.svg";
 const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProduct, lastPhrase, composition}) => {
 
     const [products1, setProducts1] = useState(0)
     const { products, setProducts } = useContext(CartContext);
     const addToCart1 = () => {
+
+        document.querySelector(".cart_modal_h").classList.add("opacity_o")
         console.log(products)
         const updatedCart = [...products];
         const index = updatedCart.findIndex(item => item.namee === namee);
@@ -23,12 +28,18 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
         if (index !== -1) {
             updatedCart[index].quantity += 1;
         } else {
-
-            updatedCart.push({ image, namee, price, quantity: 1 });
+            updatedCart.push({image, namee, price, quantity: 1});
         }
 
         setProducts(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
+        if(window.innerWidth <= 768) {
+
+            document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
+        }else{
+            document.querySelector(".cart_modal_h").classList.add("opacity_o")
+
+        }
     };
     useEffect(() => {
         setProducts1(products.reduce((accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price, 0))
@@ -79,14 +90,7 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
             }} />
             <Header/>
 
-            {window.innerWidth <= 768 ? <div className = "button_order">
-                <button className = "order_button fix" onClick={() => {
-                    addToCart1()
-                    document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
-                }}>
-                    Замовити
-                </button>
-            </div> : ""}
+
             <div className = "page_product">
             <div className = "breadcrumbs">
                 <a href = "/">ГОЛОВНА</a> / {namee}
@@ -106,7 +110,9 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                         <br/>
                         <br/>
                         {lastPhrase}</div>
-                    <button className = "order_button" onClick={addToCart1}>
+                    <button className = "order_button" onClick={() => {
+                        addToCart1()
+                        document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")}}>
                         Замовити
                     </button>
                 </div>
@@ -146,6 +152,35 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                 </div>
             </div>
         </div>
+            <div className = "footer" style = {window.innerWidth<768 ? {marginBottom:"109px"} : ""}>
+                <div className = "footer_logo_menu">
+                    <div className = "footer_logo_block">
+                        <img src = {footer_logo} alt = ""/>
+                    </div>
+                    <div className = "footer_main_menu">
+                        <a href="#bars">батончики</a>
+                        <a href="#about">про нас</a>
+                        <a href="#powder">порошки</a>
+                        <a href="#showbox">шоубокс</a>
+                        <a href="#set">набори</a>
+                    </div>
+                    <div className = "society_footer">
+                        <div><a href = "https://www.instagram.com/marsea.official?igsh=OW04ZHRjMHYyNWgx" target = "_blank">{window.innerWidth <= 768 ? <img src={insta} alt = "" /> : "instagram"}</a></div>
+                        <div><a href = "https://t.me/marsi2k19" target = "_blank">{window.innerWidth <= 768 ? <img src={telegram} alt = "" /> : "telegram"}</a></div>
+                    </div>
+                </div>
+                <div className = "copyright_marsea">
+                    ©2025, Marsea
+                </div>
+            </div>
+            {window.innerWidth <= 768 ? <div className = "button_order">
+                <button className = "order_button fix" onClick={() => {
+                    addToCart1()
+                    document.querySelector(".modal_cart_allscreen").classList.add("opacity_mob")
+                }}>
+                    Замовити
+                </button>
+            </div> : ""}
         </>
     );
 };

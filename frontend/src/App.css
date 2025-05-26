@@ -67,3 +67,6 @@ button{
 .all_products_basket{
     scrollbar-width: thin;
 }
+.main_banner_block_info{
+    overflow:hidden;
+}

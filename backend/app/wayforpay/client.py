@@ -62,4 +62,17 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict[str, Any]:
 
     payment_data["merchantSignature"] = create_signature(signature_data)
 
-    return {"url": base_config.PAYMENT_URL, "method": "POST", "params": payment_data}
+    print("🧾 SIGNATURE DATA:", signature_data)
+    print("🧾 JOINED:", ";".join(map(str, signature_data)))
+    print("🧾 GENERATED SIGNATURE:", payment_data["merchantSignature"])
+
+    return {
+        "url": base_config.PAYMENT_URL,
+        "method": "POST",
+        "params": payment_data,
+        "other": [
+            signature_data,
+            ";".join(map(str, signature_data)),
+            payment_data["merchantSignature"],
+        ],
+    }

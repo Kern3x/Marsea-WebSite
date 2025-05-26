@@ -30,33 +30,37 @@ app.add_middleware(
 app.add_middleware(WayforpaySignatureGuard)
 
 tg_api = TelegramAPIHelper()
+
+# тимчасове сховище неоплачених замовлень
 pending_orders: dict[str, dict] = {}
 
 
 @app.post("/pay")
 async def create_payment(payload: PaymentRequest, request: Request):
     origin = request.headers.get("origin")
-
     if origin not in origins:
         return JSONResponse(status_code=403, content={"detail": "Invalid origin"})
 
-    if payload.payment_method == "cod":
-        order_ref = generate_order_reference()
-        payload.order_reference = order_ref
+    # 🔥 Видаляємо попереднє замовлення, якщо передано
+    if payload.order_reference and payload.order_reference in pending_orders:
+        pending_orders.pop(payload.order_reference)
 
+    # 🔄 Створюємо новий order_reference
+    order_ref = generate_order_reference()
+    payload.order_reference = order_ref
+
+    # 💵 Накладений платіж (COD)
+    if payload.payment_method == "cod":
         msg = tg_api.build_telegram_message(order_ref, payload.model_dump())
         tg_api.send_message(msg)
 
         return {
             "status": "cod_confirmed",
+            "order_reference": order_ref,
             "message": "Замовлення створено. Оплата при отриманні.",
         }
 
-    if payload.order_reference and payload.order_reference in pending_orders:
-        pending_orders.pop(payload.order_reference)
-
-    order_ref = generate_order_reference()
-    payload.order_reference = order_ref
+    # 💳 Онлайн платіж (WayforPay)
     pending_orders[order_ref] = payload.model_dump()
 
     payment_data = generate_payment_link(

@@ -25,8 +25,8 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict[str, Any]:
     order_reference = data.get("order_reference") or generate_order_reference()
     order_date = int(time.time())
 
-    amount = data["amount"]
-    currency = data["currency"]
+    amount = float(data["amount"])  # обов'язково float
+    currency = str(data["currency"])
     client_phone = data.get("client_phone", "")
     client_email = data.get("client_email", "")
 
@@ -38,7 +38,7 @@ def generate_payment_link(data: Dict[str, Any]) -> Dict[str, Any]:
         "amount": amount,
         "currency": currency,
         "productName": ["Оплата товарів MARSEA"],
-        "productPrice": [amount],
+        "productPrice": [float(amount)],
         "productCount": [1],
         "clientPhone": client_phone,
         "clientEmail": client_email,

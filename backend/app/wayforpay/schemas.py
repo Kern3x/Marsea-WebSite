@@ -13,8 +13,8 @@ class DeliveryInfo(BaseModel):
     method: Literal["np_branch", "np_courier"]
     region: str
     city: str
-    warehouse: Optional[str] = None  # для np_branch
-    address: Optional[str] = None  # для np_courier
+    warehouse: Optional[str] = None
+    address: Optional[str] = None
 
 
 class PaymentRequest(BaseModel):
@@ -29,7 +29,7 @@ class PaymentRequest(BaseModel):
     comment: Optional[str] = None
     delivery: DeliveryInfo
 
-    payment_method: Literal["card", "cod"]  # ДОДАНО
+    payment_method: Literal["card", "cod"]
 
 
 class WayForPayCallback(BaseModel):

@@ -51,7 +51,7 @@
     transition: 1s;
     position: absolute;
     top: 80px;
-    right: 200px;
+    right: -300px;
     overflow: hidden;
     z-index: 9;
     padding: 0 16px;

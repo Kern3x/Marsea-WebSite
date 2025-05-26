@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {use, useContext, useEffect, useState} from "react";
 import "./basket.css";
 import bar from "../components/images/bar1.png";
 import kr from "../components/images/bitcoin-icons_plus-outline.svg";
@@ -11,6 +11,7 @@ import Header from "../components/Header";
 import Select from "react-select";
 import npData from "../np.json";
 import CartContext from "../CartContext";
+import axios from "axios";
 
 const customStyles = {
     control: (base) => ({
@@ -30,9 +31,10 @@ const customStyles = {
 
 const Basket = ({bars}) => {
     const {products, setProducts} = useContext(CartContext);
-    const [products1, setProducts1] = useState(0);
-    const [deliveryMethod, setDeliveryMethod] = useState("post");
-    console.log(deliveryMethod)
+
+    const [deliveryMethod, setDeliveryMethod] = useState("np_branch");
+    const [paymentMethod, setPaymentMethod] = useState("cod");
+    console.log(paymentMethod)
 
     // SelectCity state
     const [selectedRegion, setSelectedRegion] = useState(null);
@@ -67,6 +69,77 @@ const Basket = ({bars}) => {
                 label: entry.warehouse,
             }))
         : [];
+
+    const [products1, setProducts1] = useState(0);
+    const [name, setName] = useState("")
+    const [phone, setPhone] = useState("")
+    const [email, setEmail] = useState("")
+    const [comment, setComment] = useState("")
+    const [street, setStreet] = useState("")
+    const [house, setHouse] = useState("")
+    const [flat, setFlat] = useState("")
+
+
+
+    const order_process = () => {
+        const qwe = products.map((e) => ({
+            name: e.namee,
+            price: e.price,
+            quantity: e.quantity
+        }));
+
+        const payload = {
+            order_reference: localStorage.getItem("order_id"),
+            amount: products1,
+            currency: "UAH",
+            cart: qwe,
+            client_name: name,
+            client_phone: phone,
+            client_email: email,
+            comment: comment,
+            delivery: {
+                method: deliveryMethod,
+                region: selectedRegion?.value,
+                city: selectedCity?.value,
+                ...(deliveryMethod === "np_branch"
+                    ? { warehouse: selectedWarehouse?.value }
+                    : { address: `вул. ${street}, буд. ${house}, кв. ${flat}` })
+            },
+            payment_method: paymentMethod
+        };
+
+        axios.post("https://marsea-shop.com/api/pay", payload)
+            .then((response) => {
+                const data = response.data;
+
+                if (paymentMethod === "card" && data?.url && data?.params) {
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = data.url;
+                    form.style.display = "none";
+
+                    // Добавить каждый параметр как скрытое поле
+                    for (const key in data.params) {
+                        if (data.params.hasOwnProperty(key)) {
+                            const input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = key;
+                            input.value = data.params[key];
+                            form.appendChild(input);
+                        }
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit(); // это и отправит данные POST-ом
+                } else {
+                    console.log("Оплата готівкою, данные успешно отправлены", data);
+                }
+            })
+            .catch((error) => {
+                console.error("Ошибка при оформлении заказа", error);
+                localStorage.setItem("order_id", null);
+            });
+    };
 
     useEffect(() => {
         setProducts1(
@@ -112,23 +185,34 @@ const Basket = ({bars}) => {
                         <div className="order_text">данні для замовлення</div>
                         <div className="order_details_main">
                             <div className="name_input">ім’я</div>
-                            <input type="text" className="form_input" placeholder="Ваше ім’я"/>
+                            <input type="text" className="form_input" placeholder="Ваше ім’я" value={name} onChange={(e) => {
+                                setName(e.target.value)
+                            }}/>
                             <div className="name_input">Телефон</div>
                             <input
                                 type="text"
                                 className="form_input"
                                 placeholder="+380 (93) 993 93 93"
+                                value={phone} onChange={(e) => {
+                                setPhone(e.target.value)
+                            }}
                             />
                             <div className="name_input">пошта</div>
                             <input
                                 type="text"
                                 className="form_input"
                                 placeholder="example@gmail.com"
+                                value={email} onChange={(e) => {
+                                setEmail(e.target.value)
+                            }}
                             />
                             <div className="name_input">КОМЕНТАР</div>
                             <textarea
                                 className="form_textarea"
                                 placeholder="Уточнення до замовлення"
+                                value={comment} onChange={(e) => {
+                                setComment(e.target.value)
+                            }}
                             />
                         </div>
 
@@ -139,10 +223,10 @@ const Basket = ({bars}) => {
                                     <input
                                         type="radio"
                                         name="delivery"
-                                        value="post"
+                                        value="np_branch"
                                         className="checkbox-input"
-                                        checked={deliveryMethod === "post"}
-                                        onChange={() => setDeliveryMethod("post")}
+                                        checked={deliveryMethod === "np_branch"}
+                                        onChange={() => setDeliveryMethod("np_branch")}
                                     />
                                     <span className="checkbox-custom"></span>
                                     <img src={newMail} alt=""/>
@@ -152,10 +236,10 @@ const Basket = ({bars}) => {
                                     <input
                                         type="radio"
                                         name="delivery"
-                                        value="courier"
+                                        value="np_courier"
                                         className="checkbox-input"
-                                        checked={deliveryMethod === "courier"}
-                                        onChange={() => setDeliveryMethod("courier")}
+                                        checked={deliveryMethod === "np_courier"}
+                                        onChange={() => setDeliveryMethod("np_courier")}
                                     />
                                     <span className="checkbox-custom"></span>
                                     <img src={newMail} alt=""/>
@@ -188,7 +272,7 @@ const Basket = ({bars}) => {
                                         value={selectedCity}
                                         isDisabled={!selectedRegion}
                                         isSearchable
-                                    />{deliveryMethod === "post" ?
+                                    />{deliveryMethod === "np_branch" ?
                                     <>
                                         <div className="name_input">ВІДДІЛЕННЯ</div>
                                         <Select
@@ -203,25 +287,44 @@ const Basket = ({bars}) => {
                                     :
                                     <>
                                         <div className="name_input">ВУЛИЦЯ</div>
-                                        <input className="name_input_curier" placeholder="ДРАГОМАНОВА 2А"/>
+                                        <input className="name_input_curier" placeholder="ДРАГОМАНОВА 2А" value={street} onChange={(e) => {setStreet(e.target.value)}}/>
                                         <div className="name_input">БУДИНОК</div>
-                                        <input className="name_input_curier" placeholder="2"/>
+                                        <input className="name_input_curier" placeholder="2" value={house} onChange={(e) => {setHouse(e.target.value)}}/>
                                         <div className="name_input">квартира/офіс</div>
-                                        <input className="name_input_curier" placeholder="2"/>
+                                        <input className="name_input_curier" placeholder="2" value={flat} onChange={(e) => {setFlat(e.target.value)}}/>
                                     </>
                                 }
 
                                 </div>
                             </div>
 
-                            <button className="order_button_next">вперед</button>
                             <div className="delivery_type">СПОСІБ ОПЛАТИ</div>
-                            <input
-                                type="text"
-                                className="form_input payment_input"
-                                placeholder="ОПЛАТА APPLE PAY/GOOGLE PAY/ ЗА РЕКВІЗИТАМИ"
-                            />
-                            <button className="order_button_next">Замовити</button>
+                            <label className="custom-checkbox checkbox_mail">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="cod"
+                                    className="checkbox-input"
+                                    checked={paymentMethod === "cod"}
+                                    onChange={() => setPaymentMethod("cod")}
+                                />
+                                <span className="checkbox-custom"></span>
+                                Оплата готівкою
+                            </label>
+                            <label className="custom-checkbox checkbox_mail curier_basket">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="card"
+                                    className="checkbox-input"
+                                    checked={paymentMethod === "card"}
+                                    onChange={() => setPaymentMethod("card")}
+                                />
+                                <span className="checkbox-custom"></span>
+                                Оплата карткою(WayForPay)
+                            </label>
+
+                            <button className="order_button_next" onClick={order_process}>Замовити</button>
                         </div>
                     </div>
                 </div>

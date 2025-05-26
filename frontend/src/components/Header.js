@@ -10,7 +10,6 @@ const Header = () => {
 
 
     const {products, setProducts} = useContext(CartContext);
-    console.log(products)
     const [products1, setProducts1] = useState(0)
 
     const [showHeader, setShowHeader] = useState(false);

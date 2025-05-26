@@ -1,5 +1,5 @@
 import './App.css';
-import {href, Route, Routes} from "react-router-dom";
+import {data, href, Route, Routes} from "react-router-dom";
 import CartContext from "./CartContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -26,6 +26,9 @@ import tg_mobile from "./components/images/tg_mob_menu.svg"
 import fish_mobile from "./components/images/fish_mob_menu.svg"
 import cat_mobile from "./components/images/cat_mobile.svg"
 import React, {useState} from "react";
+import axios from "axios";
+import ThankYouPage from "./components/ThankYouPage";
+import OrderSumMin from "./components/OrderSumMin";
 
 function App() {
     const bars =
@@ -210,6 +213,7 @@ function App() {
         return saved ? JSON.parse(saved) : [];
     });
 
+
     return (
         <div className="App">
             {window.innerWidth <= 768 ?
@@ -245,6 +249,7 @@ function App() {
                 </div>
                 : ""}
             <CartContext.Provider value={{products, setProducts}}>
+                <OrderSumMin/>
                 <Routes>
                     {pages.map((e) => <Route path={e.href} element={<PageProduct price={e.price} image={e.image}
                                                                                  description={e.description}
@@ -260,6 +265,7 @@ function App() {
                            element={<MainPage bars={bars} kombucha={kombucha} powders={powders} sets={sets}
                                               beautyKombo={beautyKombo}/>}/>
                     <Route path="/basket" element={<Basket bars={bars}/>}/>
+                    <Route path="/thankyou" element={<ThankYouPage bars={bars}/>}/>
                 </Routes>
                 <Footer/>
             </CartContext.Provider>

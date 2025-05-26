@@ -207,6 +207,7 @@
     top: 3px;
     left: 3px;
 }
+
 .order_form_mail div{
     width: auto !important;
 }
@@ -238,6 +239,7 @@
 
 }
 .delivery_type{
+    margin-bottom: 40px;
     font-family: Cormorant;
     font-weight: 400;
     font-size: 38px;

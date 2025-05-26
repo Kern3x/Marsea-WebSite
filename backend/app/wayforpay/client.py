@@ -13,7 +13,9 @@ base_config = config.get("base")
 def create_signature(data: List[str | float | int]) -> str:
     joined = ";".join(map(str, data))
     return hmac.new(
-        base_config.MERCHANT_SECRET.encode(), joined.encode(), hashlib.md5
+        bytes.fromhex(base_config.MERCHANT_SECRET),  # ⬅️ критична правка
+        joined.encode("utf-8"),
+        hashlib.md5,
     ).hexdigest()
 
 

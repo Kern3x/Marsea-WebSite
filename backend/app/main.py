@@ -40,11 +40,22 @@ async def create_payment(payload: PaymentRequest, request: Request):
     if origin not in origins:
         return JSONResponse(status_code=403, content={"detail": "Invalid origin"})
 
+    if payload.payment_method == "cod":
+        order_ref = generate_order_reference()
+        payload.order_reference = order_ref
+
+        msg = tg_api.build_telegram_message(order_ref, payload.model_dump())
+        tg_api.send_message(msg)
+
+        return {
+            "status": "cod_confirmed",
+            "message": "Замовлення створено. Оплата при отриманні.",
+        }
+
     if payload.order_reference and payload.order_reference in pending_orders:
         pending_orders.pop(payload.order_reference)
 
     order_ref = generate_order_reference()
-
     payload.order_reference = order_ref
     pending_orders[order_ref] = payload.model_dump()
 

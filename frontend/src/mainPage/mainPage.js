@@ -16,6 +16,7 @@ import Header from "../components/Header";
 import BasketElement from "../basket/BasketElement";
 import CartContext from "../CartContext";
 import "./mainPageAdaptive.css"
+import axios from "axios";
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
 
@@ -39,35 +40,35 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                 <div className="cart_modal_mob" onClick={(e) => {
                     e.stopPropagation()
                 }}>
-                <div className="cart_modal_text">Деталі замовлення</div>
-                {products.length < 1 ? <>
-                        <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
-                        <hr/>
-                    </> :
-                    <>
-                        <div className="all_products_basket">{products.map((e) =>
-                            <BasketElement image={e.image} namee={e.namee} price={e.price}
-                                           setProducts={setProducts} products={products}
-                                           quantity={e.quantity}/>
-                        )}</div>
-                        <div className="summ_products">
-                            <div>ВСЬОГО</div>
-                            <div>{products1} грн.</div>
-                        </div>
-                    </>
-                }
+                    <div className="cart_modal_text">Деталі замовлення</div>
+                    {products.length < 1 ? <>
+                            <div className="empty_cart">ТУТ ПОКИ НІЧОГО НЕМАЄ</div>
+                            <hr/>
+                        </> :
+                        <>
+                            <div className="all_products_basket">{products.map((e) =>
+                                <BasketElement image={e.image} namee={e.namee} price={e.price}
+                                               setProducts={setProducts} products={products}
+                                               quantity={e.quantity}/>
+                            )}</div>
+                            <div className="summ_products">
+                                <div>ВСЬОГО</div>
+                                <div>{products1} грн.</div>
+                            </div>
+                        </>
+                    }
 
-                <a href="/basket">
-                    <button className="to_cart">
-                        до кошика
+                    <a href="/basket">
+                        <button className="to_cart">
+                            до кошика
+                        </button>
+                    </a>
+                    <button className="button_close_cart" onClick={() => {
+                        document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
+                    }}>
+                        закрити
                     </button>
-                </a>
-                <button className="button_close_cart" onClick={() => {
-                    document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
-                }}>
-                    закрити
-                </button>
-            </div>
+                </div>
             </div>
 
 
@@ -91,7 +92,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                     <a href="#showbox">шоубокс</a>
                                     <a href="#set">набори</a>
                                 </div>
-                                <div className="basket_block">
+                                <div className="basket_block" style={{overflow:"hidden", position:"relative"}}>
                                     <a onClick={() => {
                                         document.querySelector(".cart_modal").classList.toggle("opacity_t")
                                     }}><img src={basket} alt=""/></a>
@@ -114,7 +115,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                             </>
                                         }
 
-                                        <a href="/basket">
+                                        <a href = "/basket">
                                             <button className="to_cart">
                                                 до кошика
                                             </button>

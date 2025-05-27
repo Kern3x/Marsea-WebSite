@@ -61,7 +61,7 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
         *product_prices,
     ]
 
-    signature = create_signature(sign_data)
+    signature = create_signature(sign_data)[1]
 
     return JSONResponse(
         {
@@ -84,6 +84,7 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
                 "serviceUrl": base_config.CALLBACK_URL,
                 "merchantSignature": signature,
             },
+            "joined": signature[0],
         }
     )
 

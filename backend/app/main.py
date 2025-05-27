@@ -12,7 +12,7 @@ from app.utils.tg_api_helper import TelegramAPIHelper
 from app.utils.liqpay_module import create_liqpay_payment, verify_liqpay_signature
 
 
-app = FastAPI()
+app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
 tg_api = TelegramAPIHelper()
 
 base_config = config.get("base")

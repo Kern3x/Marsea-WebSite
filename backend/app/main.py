@@ -83,7 +83,7 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
                 "clientEmail": data.client_email,
                 "clientPhone": data.client_phone,
                 "returnUrl": base_config.RETURN_URL,
-                "serviceUrl": base_config.SERVICE_URL,
+                "serviceUrl": base_config.CALLBACK_URL,
                 "merchantSignature": signature,
             },
         }

@@ -39,10 +39,21 @@ async def pay_liqpay(request: PaymentRequest):
 
     order_id = str(uuid4())
     request.order_reference = order_id
-    pending_orders[order_id] = request.model_dump()
+    data = request.model_dump()
+    pending_orders[order_id] = data
+
+    if request.payment_method == "cod":
+        msg = tg_api.build_telegram_message(order_id, data)
+        tg_api.send_message(msg)
+
+        return {
+            "status": "cod_confirmed",
+            "order_reference": order_id,
+            "message": "Замовлення створено. Оплата при отриманні.",
+        }
 
     try:
-        liqpay_data = create_liqpay_payment(request.model_dump(), order_id)
+        liqpay_data = create_liqpay_payment(data, order_id)
         return JSONResponse(content=liqpay_data)
     except Exception:
         raise HTTPException(status_code=500, detail="Failed to create LiqPay payment")

@@ -5,7 +5,7 @@ import hashlib
 from app.config import config
 
 
-base_config = config.get("get")
+base_config = config.get("base")
 
 
 def generate_liqpay_signature(data_b64: str, private_key: str) -> str:

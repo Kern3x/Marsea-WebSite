@@ -30,6 +30,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ThankYouPage from "./components/ThankYouPage";
 import OrderSumMin from "./components/OrderSumMin";
+import T from "./t";
 
 function App() {
     const bars =
@@ -226,22 +227,14 @@ function App() {
         return saved ? JSON.parse(saved) : [];
     });
 
-    useEffect(() => {
-        // Пример на фронтенде (например, в файле вашего компонента или скрипта)
-
-
-// Вызовите эту функцию, например, по клику на кнопку
-// <button onclick="initiateWayForPayPayment()">Оплатить</button>
-    }, [])
-    // Пример во Frontend компоненте (например, в handleSubmit в вашей корзине)
 
 
 
-// Вызывайте эту функцию, например, по нажатию кнопки "Оплатить LiqPay"
-// <button onClick={handleLiqPayPayment}>Оплатить через LiqPay</button>
+// Пример использования в функции order_process или при клике на кнопку
 
     return (
         <div className="App">
+
 
             {window.innerWidth <= 768 ?
                 <div className="mobile_menu start_pos_mob_menu">
@@ -292,6 +285,7 @@ function App() {
                            element={<MainPage bars={bars} kombucha={kombucha} powders={powders} sets={sets}
                                               beautyKombo={beautyKombo}/>}/>
                     <Route path="/basket" element={<Basket bars={bars}/>}/>
+                    <Route path="/t" element={<T/>}/>
                     <Route path="/thankyou" element={<ThankYouPage bars={bars}/>}/>
                 </Routes>
 

@@ -9,6 +9,8 @@ import "./headerAdaptive.css"
 const Header = () => {
 
 
+
+
     const {products, setProducts} = useContext(CartContext);
     const [products1, setProducts1] = useState(0)
 

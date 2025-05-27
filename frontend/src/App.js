@@ -284,6 +284,7 @@ function App() {
                            element={<MainPage bars={bars} kombucha={kombucha} powders={powders} sets={sets}
                                               beautyKombo={beautyKombo}/>}/>
                     <Route path="/basket" element={<Basket bars={bars}/>}/>
+
                     <Route path="/thankyou" element={<ThankYouPage bars={bars}/>}/>
                 </Routes>
 

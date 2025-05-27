@@ -35,8 +35,8 @@ app.add_middleware(
 async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks):
     if data.payment_method == "cod":
         order_reference = data.order_reference or str(uuid.uuid4())
-
         msg = tg_api.build_telegram_message(order_reference, data)
+
         background_tasks.add_task(tg_api.send_message, msg)
 
         return {"status": "cod", "order_reference": order_reference}
@@ -48,21 +48,19 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     product_prices = [item.price for item in data.cart]
     product_counts = [item.quantity for item in data.cart]
 
+    # Виправлена структура
     sign_data = [
         base_config.MERCHANT_ACCOUNT,
-        "auto",
+        base_config.WEBSITE_DOMAIN,
         order_reference,
         order_date,
         data.amount,
         data.currency,
-        *sum(
-            [
-                [n, q, p]
-                for n, q, p in zip(product_names, product_counts, product_prices)
-            ],
-            [],
-        ),
+        *product_names,
+        *product_counts,
+        *product_prices,
     ]
+
     signature = create_signature(sign_data)
 
     return JSONResponse(

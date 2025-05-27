@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>WayforPay</title></head>
+<body onload="document.forms[0].submit()">
+  <form method="POST" action="https://secure.wayforpay.com/pay">
+    <input type="hidden" name="merchantAccount" value="marsea_shop_com">
+    <input type="hidden" name="merchantDomainName" value="marsea-shop.com">
+    <input type="hidden" name="orderReference" value="0a692391-3362-4814-a239-0b140fbce227">
+    <input type="hidden" name="orderDate" value="1748359198">
+    <input type="hidden" name="amount" value="550">
+    <input type="hidden" name="currency" value="UAH">
+
+    <input type="hidden" name="productName[]" value="Футболка чорна M">
+    <input type="hidden" name="productCount[]" value="2">
+    <input type="hidden" name="productPrice[]" value="275">
+
+    <input type="hidden" name="merchantSignature" value="8d4fe48b8de08735a973ae2e5ad2b83a">
+    <input type="hidden" name="clientName" value="Денис Ковальчук">
+    <input type="hidden" name="clientEmail" value="denys@example.com">
+    <input type="hidden" name="clientPhone" value="+380631234567">
+    <input type="hidden" name="returnUrl" value="https://marsea-shop.com/thankyou">
+    <input type="hidden" name="serviceUrl" value="https://marsea-shop.com/api/pay-callback">
+  </form>
+</body>
+</html>

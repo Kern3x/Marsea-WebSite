@@ -30,7 +30,6 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ThankYouPage from "./components/ThankYouPage";
 import OrderSumMin from "./components/OrderSumMin";
-import T from "./t";
 
 function App() {
     const bars =

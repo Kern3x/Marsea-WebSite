@@ -1,0 +1,317 @@
+.product_page_card{
+    width: 360px;
+    height: 470px;
+    border: 1px solid #CCD7E2;
+    background: #FCFCFC;
+    border-radius: 30px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+}
+.product_short_info{
+    margin-top: auto !important;
+}
+.add_to_cart{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+}
+.product_image{
+    margin-top: 16px;
+}
+.product_image img{
+    width: 100%;
+}
+.product_short_info{
+    margin: 10px 16px 14px 16px;
+}
+.product_card_name{
+    font-family: Wix Madefor Display;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #7B181E;
+}
+.product_card_info{
+    margin-top: 6px;
+    font-family: Wix Madefor Display;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: #715C79;
+}
+.product_price{
+    width: 100%;
+    text-align: center;
+    margin-top: 14px;
+}
+.product_desc{
+    display: flex;
+}
+@media screen and (max-width: 768px) {
+    .product_short_info {
+        margin: 7px 10px 3px 10px !important;
+        height: 64px;
+    }
+
+    .product_image {
+        margin-top: 10px !important;
+    }
+
+    .product_card_name {
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+
+    }
+
+    .product_card_info {
+        margin-top: 5px;
+        font-family: Wix Madefor Display;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 120%;
+        text-align: center;
+
+    }
+
+    .product_price {
+        font-family: Wix Madefor Display;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 120%;
+        text-align: center;
+        margin-top: 0;
+
+    }
+
+    .add_to_cart {
+        width: 24px !important;
+        height: 24px !important;
+        border-radius: 50%;
+        position: absolute;
+        top: 10px !important;
+        right: 10px !important;
+        cursor: pointer;
+    }
+
+    .add_to_cart img {
+        width: 100%;
+    }
+
+    .beauty_block_products .product_image img {
+        height: 169px;
+        width: auto;
+
+    }
+
+    .show_box {
+        margin-top: 0;
+        padding: 0 20px;
+    }
+
+    .product_card_big {
+        width: 100%;
+        height: auto;
+        border: 1px solid #CCD7E2;
+        background: #FCFCFC;
+        border-radius: 30px;
+        position: relative;
+    }
+
+    .show_box_products .product_short_info {
+        margin: -10px 10px 10px 10px !important;
+        height: 34px;
+    }
+
+    .show_box_products .product_price {
+        margin-bottom: 10px;
+    }
+
+    .set_block {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .set_block_products .product_price {
+        margin-top: 10px;
+    }
+
+    .product_price {
+        margin-bottom: 10px;
+    }
+
+    .footer {
+        align-items: center;
+        padding: 24px;
+
+        height: auto;
+    }
+
+    .footer_logo_menu {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer_main_menu {
+        color: #FFFFFF;
+        margin-top: 40px;
+        display: flex;
+        text-transform: uppercase;
+        flex-direction: column;
+        justify-content: center;
+        font-family: Montserrat;
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 100%;
+        text-align: center;
+        gap: 15px;
+
+    }
+
+    .society_footer {
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 10px;
+    }
+
+    .society_footer div {
+        margin-left: 0;
+    }
+
+    .footer_logo_block img {
+        width: 69px;
+    }
+
+    .copyright_marsea {
+        margin-top: 33px !important;
+    }
+    .product_desc {
+        flex-direction: column;
+
+    }
+    .bars_main_block {
+        margin: inherit;
+        margin-bottom: 0;
+    }
+    .bars_block_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .bars_main_block {
+        padding: 50px 20px;
+
+    }
+    .bars_block_description {
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .bars_block_products{
+        margin-bottom: inherit;
+        margin-top: 10px;
+        gap: 10px;
+        justify-content: unset;
+    }
+    .product_card {
+        width: 202px;
+        height: auto;
+        border: 1px solid #CCD7E2;
+        background: #FCFCFC;
+        border-radius: 30px;
+        position: relative;
+    }
+    .breadcrumbs{
+        display: none;
+    }
+    .product_desc {
+        margin-top: 0;
+        margin-left: 0;
+        align-items: center;
+    }
+    .page_product {
+        margin-top: 111px;
+
+    }
+    .product_page_card {
+        width: 202px;
+        height: auto;
+
+    }
+    .product_desc_main {
+        width: 100%;
+        margin-top: 25px;
+    }
+    .red_text{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+
+    }
+    .product_desc_main{
+        font-family: Montserrat;
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 100%;
+
+    }
+    .page_product .marsea_line {
+        margin-top: 50px;
+    }
+    .button_order{
+        display: flex;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        align-items: center;
+        padding: 20px 0;
+        justify-content: center;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 25px 0px #0000001A;
+        z-index: 997;
+
+    }
+    .order_button.fix{
+        margin-top: 0;
+        padding: 24px 56px;
+        font-family: Montserrat;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 130%;
+        text-align: center;
+        text-transform: uppercase;
+
+    }
+    .page_product .order_button{
+        display: none;
+    }
+    .basket_details {
+        grid-template-columns: 1fr !important;
+    }
+    .basket_page {
+        margin-top: 121px !important;
+    }
+
+}

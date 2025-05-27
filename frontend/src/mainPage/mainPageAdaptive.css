@@ -1,0 +1,287 @@
+@media screen and (max-width: 768px){
+    .main_banner_block {
+        width: 100%;
+
+        grid-template-columns: 1fr;
+        margin-top: 71px;
+        height: 495px;
+    }
+    .main_page {
+
+        margin-top: 0;
+    }
+    .main_banner{
+        display: none;
+    }
+    .main{
+        width: 100%;
+    }
+    .banner_h1{
+        width: 100%;
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 100%;
+        text-align: center;
+        text-transform: uppercase;
+        padding: 0 35px;
+
+    }
+    .banner_description{
+        width: 100%;
+        padding: 0 35px;
+        font-family: Montserrat;
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 100%;
+        text-align: center;
+        margin-top: 5px;
+
+    }
+    .banner_button{
+        height: 66px;
+        width: 200px;
+        font-family: Montserrat;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 130%;
+        text-align: center;
+        text-transform: uppercase;
+
+    }
+    .main_banner_block_info {
+        background: url("./images/mob_back.svg") center center no-repeat #FFFAFA ;
+    }
+    .bars_main_block {
+        margin: inherit;
+    }
+    .bars_block_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .bars_main_block {
+        padding: 50px 20px;
+
+    }
+    .bars_block_description {
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .bars_block_products{
+        margin-bottom: inherit;
+        margin-top: 10px;
+        gap: 10px;
+        justify-content: unset;
+    }
+    .product_card {
+        width: 202px;
+        height: auto;
+        border: 1px solid #CCD7E2;
+        background: #FCFCFC;
+        border-radius: 30px;
+        position: relative;
+    }
+    .for_over{
+        scrollbar-width: none;
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+    .bars_block_products{
+        width:fit-content;
+    }
+    .powder_block{
+        padding: 20px;
+    }
+    .powder_block_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .powder_block_description{
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .powder_block_products{
+        margin-top: 10px;
+        gap: 10px;
+        justify-content: unset;
+    }
+    .beauty_block{
+        padding: 50px 20px;
+    }
+    .beauty_block_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .beauty_block_description{
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .kombucha_block{
+        padding: 50px 20px;
+        margin-top: 0;
+    }
+    .kombucha_block_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .kombucha_block_description{
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .kombucha_block_products{
+        margin-top: 10px;
+        gap: 10px;
+        justify-content: unset;
+    }
+    .set_block{
+        padding: 50px 20px;
+    }
+    .set_block_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .set_block_description{
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .set_block_products{
+        margin-top: 10px;
+        gap: 10px;
+        justify-content: unset;
+    }
+
+    .show_box_h1{
+        font-family: Wix Madefor Display;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .show_box_description{
+        font-family: Cormorant;
+        font-weight: 400;
+        font-size: 18px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+        color: #1E0C2D;
+        margin-top: 10px;
+    }
+    .show_box_products{
+        margin-top: 10px;
+        gap: 10px;
+        justify-content: unset;
+    }
+    .line_images img {
+        width: 70px;
+        margin-right: 12px;
+    }
+    .line_images {
+        height: 32px;
+    }
+    .h1_marsea_line {
+        margin-top: 10px;
+        font-family: Cormorant, sans-serif;
+        width: 60%;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .marsi_a {
+        margin-top: 10px;
+    }
+    .button_buy {
+        padding: 24px 56px;
+        color: #FFFFFF;
+        background: #7B181E;
+        border-radius: 90px;
+        font-family: Montserrat;
+        font-weight: 400;
+        font-size: 14px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .about_marsea {
+        margin: 50px 20px;
+        grid-template-columns: 1fr;
+        grid-gap: 10px;
+    }
+    .info_about_marsea {
+        border-radius: 30px;
+        border: 1px solid #CCD7E2;
+        background: #FCFCFC;
+        padding: 54px 22px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .info_about_marsea img {
+        width: 83px;
+    }
+    .about_marsea_text {
+        margin-top: 20px;
+        font-family: Montserrat;
+        font-weight: 300;
+        font-size: 12px;
+        color: #1E0C2D;
+        text-align: center;
+    }
+    .beautyCat, .beautyLama{
+        display: none;
+    }
+    .cat_showbox{
+        display: none;
+    }
+    .fish_showbox{
+        display: none
+    }
+
+
+}

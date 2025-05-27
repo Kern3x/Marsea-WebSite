@@ -1,0 +1,49 @@
+.product_card_big{
+    width: 430px;
+    height: 390px;
+    border: 1px solid #CCD7E2;
+    background: #FCFCFC;
+    border-radius: 30px;
+    position: relative;
+
+}
+.add_to_cart{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+}
+.product_image{
+    margin-top: 16px;
+}
+.product_image img{
+    width: 100%;
+}
+.product_short_info{
+    margin: 10px 16px 14px 16px;
+}
+.product_card_name{
+    font-family: Wix Madefor Display;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #7B181E;
+}
+.product_card_info{
+    margin-top: 6px;
+    font-family: Wix Madefor Display;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: #715C79;
+}
+.product_price{
+    width: 100%;
+    text-align: center;
+    margin-top: 14px;
+}

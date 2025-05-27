@@ -55,8 +55,8 @@ async def pay_liqpay(request: PaymentRequest):
     try:
         liqpay_data = create_liqpay_payment(data, order_id)
         return JSONResponse(content=liqpay_data)
-    except Exception:
-        raise HTTPException(status_code=500, detail="Failed to create LiqPay payment")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/callback")

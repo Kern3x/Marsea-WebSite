@@ -13,13 +13,12 @@ class BaseConfig:
     BOT_TOKEN = os.environ.get("BOT_TOKEN")
     ORDERS_CHAT = os.environ.get("ORDERS_CHAT")
 
-    MERCHANT_ACCOUNT = os.environ.get("MERCHANT_ACCOUNT")
-    MERCHANT_SECRET = os.environ.get("MERCHANT_SECRET")
+    LIQPAY_PUBLIC_KEY = os.environ.get('LIQPAY_PUBLIC_KEY')
+    LIQPAY_PRIVATE_KEY = os.environ.get('LIQPAY_PRIVATE_KEY')
 
-    WEBSITE_DOMAIN = os.environ.get("WEBSITE_DOMAIN")
-    PAYMENT_URL = os.environ.get("PAYMENT_URL")
-    RETURN_URL = os.environ.get("RETURN_URL")
-    CALLBACK_URL = os.environ.get("CALLBACK_URL")
+    LIQPAY_RETURN_URL = os.environ.get('LIQPAY_RETURN_URL')
+    LIQPAY_CALLBACK_URL = os.environ.get('LIQPAY_CALLBACK_URL')
+    LIQPAY_CHECKOUT_URL = os.environ.get('LIQPAY_CHECKOUT_URL')
 
 
 class DevelopmentConfig:

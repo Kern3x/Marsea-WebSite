@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from typing import Optional, Literal, List
-
+ 
 
 class CartItem(BaseModel):
     name: str
@@ -18,24 +18,13 @@ class DeliveryInfo(BaseModel):
 
 
 class PaymentRequest(BaseModel):
-    order_reference: Optional[str] = None
+    order_reference: Optional[str] = Field(None)
     amount: float
-    currency: str
+    currency: str = "UAH"
     cart: List[CartItem]
-
     client_name: str
     client_phone: Optional[str] = None
     client_email: Optional[str] = None
     comment: Optional[str] = None
     delivery: DeliveryInfo
-
     payment_method: Literal["card", "cod"]
-
-
-class WayForPayCallback(BaseModel):
-    orderReference: str
-    amount: float
-    currency: str
-    transactionStatus: str
-    reason: Optional[str] = ""
-    merchantSignature: str

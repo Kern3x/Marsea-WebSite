@@ -1,4 +1,4 @@
-import requests
+import httpx
 
 from app.config import config
 
@@ -15,7 +15,7 @@ class TelegramAPIHelper:
 
     def send_message(self, text: str):
         try:
-            r = requests.post(
+            r = httpx.post(
                 self.telegram_api_url + self.bot_token + "/sendMessage",
                 json={"chat_id": self.chat_id, "text": text},
             )

@@ -1,15 +1,14 @@
-import json
-import base64
-from uuid import uuid4
+import uuid
+from datetime import datetime
 
-from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import config
-from app.utils.schemas import PaymentRequest
 from app.utils.tg_api_helper import TelegramAPIHelper
-from app.utils.liqpay_module import create_liqpay_payment, verify_liqpay_signature
+from app.utils.wayforpay_module import create_signature
+from app.utils.schemas import PaymentRequest, WayForPayCallback
 
 
 app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
@@ -33,66 +32,73 @@ app.add_middleware(
 
 
 @app.post("/pay")
-async def pay_liqpay(request: PaymentRequest):
-    if request.order_reference and request.order_reference in pending_orders:
-        pending_orders.pop(request.order_reference)
+async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks):
+    if data.payment_method == "cod":
+        order_reference = data.order_reference or str(uuid.uuid4())
 
-    order_id = str(uuid4())
-    request.order_reference = order_id
-    data = request.model_dump()
-    pending_orders[order_id] = data
+        msg = tg_api.build_telegram_message(order_reference, data)
+        background_tasks.add_task(tg_api.send_message, msg)
 
-    if request.payment_method == "cod":
-        msg = tg_api.build_telegram_message(order_id, data)
-        tg_api.send_message(msg)
+        return {"status": "cod", "order_reference": order_reference}
 
-        return {
-            "status": "cod_confirmed",
-            "order_reference": order_id,
-            "message": "Замовлення створено. Оплата при отриманні.",
+    order_reference = data.order_reference or str(uuid.uuid4())
+    order_date = int(datetime.now().timestamp())
+
+    product_names = [item.name for item in data.cart]
+    product_prices = [item.price for item in data.cart]
+    product_counts = [item.quantity for item in data.cart]
+
+    sign_data = [
+        base_config.MERCHANT_ACCOUNT,
+        "auto",
+        order_reference,
+        order_date,
+        data.amount,
+        data.currency,
+        *sum(
+            [
+                [n, q, p]
+                for n, q, p in zip(product_names, product_counts, product_prices)
+            ],
+            [],
+        ),
+    ]
+    signature = create_signature(sign_data)
+
+    return JSONResponse(
+        {
+            "url": "https://secure.wayforpay.com/pay",
+            "method": "POST",
+            "params": {
+                "merchantAccount": base_config.MERCHANT_ACCOUNT,
+                "merchantDomainName": base_config.WEBSITE_DOMAIN,
+                "orderReference": order_reference,
+                "orderDate": order_date,
+                "amount": data.amount,
+                "currency": data.currency,
+                "productName": product_names,
+                "productPrice": product_prices,
+                "productCount": product_counts,
+                "clientName": data.client_name,
+                "clientEmail": data.client_email,
+                "clientPhone": data.client_phone,
+                "returnUrl": base_config.RETURN_URL,
+                "serviceUrl": base_config.SERVICE_URL,
+                "merchantSignature": signature,
+            },
         }
-
-    try:
-        liqpay_data = create_liqpay_payment(data, order_id)
-        return JSONResponse(content=liqpay_data)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    )
 
 
-@app.post("/callback")
-async def liqpay_callback(request: Request):
-    form_data = await request.form()
-    data = form_data.get("data")
-    signature = form_data.get("signature")
+@app.post("/pay-callback")
+async def payment_callback(
+    callback: WayForPayCallback, background_tasks: BackgroundTasks
+):
+    if callback.transactionStatus == "Approved":
+        background_tasks.add_task(
+            tg_api.send_message,
+            f"✅ Нова оплата!\nСума: {callback.amount} {callback.currency}\nЗамовлення: {callback.orderReference}",
+        )
+        return {"orderReference": callback.orderReference, "status": "accept"}
 
-    if not data or not signature:
-        raise HTTPException(status_code=400, detail="Missing data or signature")
-
-    if not verify_liqpay_signature(data, signature, base_config.LIQPAY_PRIVATE_KEY):
-        raise HTTPException(status_code=403, detail="Invalid LiqPay signature")
-
-    try:
-        decoded_data_json = base64.b64decode(data).decode("utf-8")
-        decoded_data = json.loads(decoded_data_json)
-        order_ref = decoded_data.get("order_id")
-
-        if decoded_data.get("status") != "success":
-            return JSONResponse(
-                content={"status": "ignored", "detail": "Payment not successful"}
-            )
-
-        if not order_ref or order_ref not in pending_orders:
-            raise HTTPException(status_code=404, detail="Order not found")
-
-        order = pending_orders.pop(order_ref)
-        order["payment_method"] = "card"
-
-        message = tg_api.build_telegram_message(order_ref, order)
-        tg_api.send_message(message)
-
-        return {"status": "success", "detail": "Payment processed"}
-
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON data in callback")
-    except Exception:
-        raise HTTPException(status_code=500, detail="Error processing callback")
+    return {"orderReference": callback.orderReference, "status": "reject"}

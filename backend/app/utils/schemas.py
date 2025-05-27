@@ -18,13 +18,23 @@ class DeliveryInfo(BaseModel):
 
 
 class PaymentRequest(BaseModel):
-    order_reference: Optional[str] = Field(None)
+    order_reference: Optional[str] = None
     amount: float
-    currency: str = "UAH"
+    currency: Literal["UAH"]
     cart: List[CartItem]
     client_name: str
     client_phone: Optional[str] = None
     client_email: Optional[str] = None
     comment: Optional[str] = None
     delivery: DeliveryInfo
+
     payment_method: Literal["card", "cod"]
+
+
+class WayForPayCallback(BaseModel):
+    orderReference: str
+    amount: float
+    currency: str
+    transactionStatus: str
+    reason: Optional[str] = ""
+    merchantSignature: str

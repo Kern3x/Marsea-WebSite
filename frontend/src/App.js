@@ -30,7 +30,6 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ThankYouPage from "./components/ThankYouPage";
 import OrderSumMin from "./components/OrderSumMin";
-import T from "./t";
 
 function App() {
     const bars =
@@ -285,7 +284,7 @@ function App() {
                            element={<MainPage bars={bars} kombucha={kombucha} powders={powders} sets={sets}
                                               beautyKombo={beautyKombo}/>}/>
                     <Route path="/basket" element={<Basket bars={bars}/>}/>
-                    <Route path="/t" element={<T/>}/>
+
                     <Route path="/thankyou" element={<ThankYouPage bars={bars}/>}/>
                 </Routes>
 

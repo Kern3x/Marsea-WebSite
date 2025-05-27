@@ -233,78 +233,16 @@ function App() {
 // Вызовите эту функцию, например, по клику на кнопку
 // <button onclick="initiateWayForPayPayment()">Оплатить</button>
     }, [])
-    async function initiateWayForPayPayment() {
-        const orderDetails = {
-            amount: 486,
-            currency: 'UAH',
-            productName: ['Оплата товарів MARSEA'],
-            productPrice: [486],
-            productCount: [1],
-            clientPhone: 'fdvfvb',
-            clientEmail: 'fbdfdf',
-            // orderReference: 'e066d7ef-f377-412a-9e03-da0c4711aadb' // Если вы хотите использовать существующий orderReference
-        };
+    // Пример во Frontend компоненте (например, в handleSubmit в вашей корзине)
 
-        try {
-            // Отправляем запрос на ваш Node.js бэкенд
-            const response = await fetch('http://localhost:3001/api/pay', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderDetails),
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to get payment link from backend');
-            }
 
-            const paymentLinkData = await response.json();
-            console.log('Payment Link Data from Node.js:', paymentLinkData);
-
-            // Формируем и отправляем форму для редиректа на WayForPay
-            const form = document.createElement('form');
-            form.method = paymentLinkData.method; // 'POST'
-            form.action = paymentLinkData.url;   // 'https://secure.wayforpay.com/pay'
-
-            for (const key in paymentLinkData.params) {
-                if (paymentLinkData.params.hasOwnProperty(key)) {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    // WayForPay ожидает массивы для productName, productPrice, productCount
-                    // Поэтому если это массив, нужно добавить [] к имени поля
-                    if (Array.isArray(paymentLinkData.params[key])) {
-                        // WayForPay может ожидать поля типа "productName[]" или просто "productName"
-                        // В зависимости от их реализации, попробуйте оба варианта
-                        // Для безопасности, лучше генерировать несколько полей с одинаковым именем,
-                        // если это массив для WayForPay.
-                        // Пример:
-                        paymentLinkData.params[key].forEach(item => {
-                            const arrayInput = document.createElement('input');
-                            arrayInput.type = 'hidden';
-                            arrayInput.name = `${key}[]`; // Имя поля с [] для массива
-                            arrayInput.value = item;
-                            form.appendChild(arrayInput);
-                        });
-                    } else {
-                        input.value = paymentLinkData.params[key];
-                        form.appendChild(input);
-                    }
-                }
-            }
-            document.body.appendChild(form);
-            form.submit(); // Перенаправление на страницу оплаты WayForPay
-
-        } catch (error) {
-            console.error('Error initiating payment:', error);
-            alert('Ошибка при инициации платежа: ' + error.message);
-        }
-    }
+// Вызывайте эту функцию, например, по нажатию кнопки "Оплатить LiqPay"
+// <button onClick={handleLiqPayPayment}>Оплатить через LiqPay</button>
 
     return (
         <div className="App">
+
             {window.innerWidth <= 768 ?
                 <div className="mobile_menu start_pos_mob_menu">
                    <a href = "/#bars" onClick={() => {

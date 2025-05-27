@@ -82,6 +82,66 @@ const Basket = ({bars}) => {
     const [flat, setFlat] = useState("")
 
 
+    const handleLiqPayPayment = async () => {
+        const orderDetails = {
+            amount: products1, // Сумма для теста. В реальном приложении - из корзины.
+            currency: 'UAH',
+            description: 'Оплата товаров MARSEA',
+        };
+
+        try {
+            console.log('Sending request to backend with payload:', orderDetails); // Лог того, что отправляем на бэкенд
+            const response = await fetch('http://localhost:3001/api/pay-liqpay', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderDetails),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text(); // Попробуем получить текст ошибки
+                console.error(`HTTP error! Status: ${response.status}. Response text: ${errorText}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const liqpayResponse = await response.json();
+            console.log('LiqPay Response from Backend:', liqpayResponse); // <-- КЛЮЧЕВОЙ ЛОГ: ЧТО ВЕРНУЛ БЭКЕНД
+
+            // Убедитесь, что liqpayResponse содержит action_url и params
+            const { action_url, params } = liqpayResponse;
+
+            if (!action_url || !params || !params.data || !params.signature) {
+                console.error('Missing LiqPay parameters in response from backend:', liqpayResponse);
+                alert('Не удалось получить полные данные для оплаты LiqPay. Проверьте консоль для деталей.');
+                return;
+            }
+
+            // Создаем динамическую форму и отправляем ее
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = action_url; // Это должно быть 'https://www.liqpay.ua/api/3/checkout'
+            form.target = '_self';
+
+            for (const key in params) {
+                if (params.hasOwnProperty(key)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = params[key];
+                    form.appendChild(input);
+                }
+            }
+
+            document.body.appendChild(form);
+            console.log('Submitting form to LiqPay:', form);
+            form.submit();
+            // document.body.removeChild(form); // Обычно удаляется после submit, но если возникнут проблемы, можно закомментировать для отладки
+        } catch (error) {
+            console.error('Error during LiqPay payment initiation:', error);
+            alert('Не удалось начать оплату LiqPay. Пожалуйста, попробуйте позже. Детали в консоли.');
+        }
+    };
+
+
 
     const order_process = () => {
         const qwe = products.map((e) => ({
@@ -91,9 +151,9 @@ const Basket = ({bars}) => {
         }));
 
         const payload = {
-            order_reference: localStorage.getItem("order_id"),
+            //order_reference: localStorage.getItem("order_id"),
             amount: products1,
-            currency: "UAH",
+           // currency: "UAH",
             cart: qwe,
             client_name: name,
             client_phone: phone,
@@ -105,7 +165,7 @@ const Basket = ({bars}) => {
                 city: selectedCity?.value,
                 ...(deliveryMethod === "np_branch"
                     ? { warehouse: selectedWarehouse?.value }
-                    : { address: 'вул. ${street}, буд. ${house}, кв. ${flat}' })
+                    : { address: `вул. ${street}, буд. ${house}, кв. ${flat}` })
     },
         payment_method: paymentMethod
     };
@@ -113,42 +173,12 @@ const Basket = ({bars}) => {
         axios.post("https://marsea-shop.com/api/pay", payload)
             .then((response) => {
               //  axios.post("https://secure.wayforpay.com/pay",response.data)
+
                 const data = response.data;
                 console.log("data :", data);
 
                 if (paymentMethod === "card" && data?.url && data?.params) {
-                    const form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = data.url;
-                    form.target = "_blank";
-                    form.style.display = "none";
-
-                    for (const key in data.params) {
-                        if (!data.params.hasOwnProperty(key)) continue;
-
-                        const value = data.params[key];
-
-                        // 🔐 Правильна обробка масивів (productName, productPrice, productCount)
-                        if (Array.isArray(value)) {
-                            value.forEach((v) => {
-                                const input = document.createElement("input");
-                                input.type = "hidden";
-                                input.name = key ; // WayforPay сам розпізнає масив
-                                input.value = v;
-                                form.appendChild(input);
-                            });
-                        } else {
-                            const input = document.createElement("input");
-                            input.type = "hidden";
-                            input.name = key;
-                            input.value = value;
-                            form.appendChild(input);
-                        }
-                    }
-                    document.body.appendChild(form);
-                    console.log("form:", form);
-
-                   form.submit();  // Тепер можна запускати
+                    handleLiqPayPayment()
                 } else {
                     console.log("Оплата готівкою, данные успешно отправлены", data);
                 }
@@ -344,7 +374,9 @@ const Basket = ({bars}) => {
                                 Оплата карткою(WayForPay)
                             </label>
 
-                            <button className="order_button_next" onClick={order_process}>Замовити</button>
+                            <button className="order_button_next" onClick={() => {
+                                order_process()
+                            }}>Замовити</button>
                         </div>
                     </div>
                 </div>

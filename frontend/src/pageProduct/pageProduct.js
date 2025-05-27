@@ -152,7 +152,9 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                 </div>
             </div>
         </div>
-            <div className = "footer" style = {window.innerWidth<768 ? {marginBottom:"109px"} : ""}>
+            <div className = "footer" onLoad={(e) => {
+               if( window.innerWidth < 768){ e.currentTarget.style.cssText = "margin-bottom:109px"}
+            }}>
                 <div className = "footer_logo_menu">
                     <div className = "footer_logo_block">
                         <img src = {footer_logo} alt = ""/>

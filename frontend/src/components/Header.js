@@ -21,9 +21,9 @@ const Header = () => {
             if (window.pageYOffset < 70) {
                 document.querySelector(".cart_modal_h").classList.remove("opacity_o")
 
-            }else if(window.pageYOffset <= 70){
+            }/*else if(window.pageYOffset >= 70){
                 document.querySelector(".cart_modal").classList.remove("opacity_t")
-            }
+            }*/
 
         };
         window.addEventListener("scroll", onScroll);

@@ -21,6 +21,8 @@ class BaseConfig:
     RETURN_URL = os.environ.get("RETURN_URL")
     CALLBACK_URL = os.environ.get("CALLBACK_URL")
 
+    REDIS_HOST = os.environ.get("REDIS_HOST")
+
 
 class DevelopmentConfig:
     """Development configuration."""

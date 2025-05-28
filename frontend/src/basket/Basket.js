@@ -43,8 +43,8 @@ const Basket = ({ bars }) => {
     const [signature, setSignature] = useState("");
     const [merchantAccount, setMerchantAccount] = useState("freelance_user_66f5183794ca1")
     const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com")
-    const [rand, setRand] = useState(Math.floor(Date.now() / 1000))
-    const [rand1, setRand1] = useState(Math.floor(Date.now() / 10))
+    const [rand, setRand] = useState("")
+    const [rand1, setRand1] = useState("")
     const [summ, setSumm] = useState(123.00)
     const [productNameState, setProductNameState] = useState([])
     const [productPriceState, setProductPriceState] = useState([])
@@ -94,6 +94,7 @@ const Basket = ({ bars }) => {
         : [];
 
     const [products1, setProducts1] = useState(0);
+    const [amount, setAmount] = useState(0);
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
@@ -132,16 +133,27 @@ const Basket = ({ bars }) => {
             const response = await axios.post(
                 "https://marsea-shop.com/api/pay",
                 payload
-            );
-            const data = response.data;
-            console.log(data)
+            ).then((data) => {
+                if (paymentMethod === "card" ) {
+                const data1 = data.data.params
+                console.log(data1)
 
-            if (paymentMethod === "card" ) {
-                document.querySelector(".qwer").submit()
-            } else {
-                window.location.href = "/thankyou"
-                console.log("Оплата готівкою або помилка", data);
-            }
+                setSignature(data1.merchantSignature);
+                setRand(data1.orderDate);
+                setRand1(data1.orderReference);
+                setAmount(String(data1.amount));
+
+
+                    document.querySelector(".qwer").target= "_blank"
+                    document.querySelector(".qwer").submit()
+                    console.log(document.querySelector(".qwer"))
+
+                } else {
+                    window.location.href = "https://marsea-shop.com/thankyou"
+                    console.log("Оплата готівкою або помилка", data);
+                }
+            })
+
         } catch (error) {
             console.error("Помилка при оформленні замовлення", error);
         }
@@ -167,7 +179,7 @@ const Basket = ({ bars }) => {
         if (!products || products.length === 0) return;
 
         const names = products.map((e) => e.namee);
-        const prices = products.map((e) => e.price);
+        const prices = products.map((e) => String(`${e.price}.00`));
         const counts = products.map((e) => e.quantity);
 
         setProductNameState(names);
@@ -183,31 +195,6 @@ const Basket = ({ bars }) => {
         )
             return;
 
-        const fetchSignature = async () => {
-            const res = await fetch("http://localhost:3001/generate-signature", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    merchantAccount: merchantAccount,
-                    merchantDomainName: merchantDomainName,
-                    orderReference: rand1,
-                    orderDate: rand,
-                    amount: products1,
-                    currency: "UAH",
-                    productName: productNameState,
-                    productCount: productCountState,
-                    productPrice: productPriceState,
-                }),
-            });
-
-            const data = await res.json();
-            console.log("Подпись:", data.signature);
-            setSignature(data.signature);
-        };
-
-        fetchSignature();
     }, [productNameState, productPriceState, productCountState]);
 
 
@@ -227,7 +214,7 @@ const Basket = ({ bars }) => {
                 <input type="hidden" name="merchantDomainName" value={merchantDomainName} />
                 <input type="hidden" name="orderReference" value={rand1} />
                 <input type="hidden" name="orderDate" value={rand} />
-                <input type="hidden" name="amount" value={products1} />
+                <input type="hidden" name="amount" value={amount} />
                 <input type="hidden" name="currency" value="UAH" />
                 <input type="hidden" name="orderTimeout" value="" />
                 {productNameState.map((e) => <input type="hidden" name="productName[]" value={e} />)}

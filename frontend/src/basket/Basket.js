@@ -14,6 +14,8 @@ import CartContext from "../CartContext";
 import axios from "axios";
 import Footer from "../components/Footer";
 import OrderSumMin from "../components/OrderSumMin";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {Pagination} from "swiper/modules";
 
 const customStyles = {
     control: (base) => ({
@@ -134,34 +136,10 @@ const Basket = ({ bars }) => {
             const data = response.data;
             console.log(data)
 
-            if (paymentMethod === "card" && data?.url && data?.params) {
-                const form = document.createElement("form");
-                form.method = "POST";
-                form.action = data.url;
-
-                Object.entries(data.params).forEach(([key, value]) => {
-                    if (Array.isArray(value)) {
-                        value.forEach((val) => {
-                            const input = document.createElement("input");
-                            input.type = "hidden";
-                            input.name = key + "[]";
-                            input.value = val;
-                            form.appendChild(input);
-                        });
-                    } else {
-                        const input = document.createElement("input");
-                        input.type = "hidden";
-                        input.name = key;
-                        input.value = value;
-                        form.appendChild(input);
-                    }
-                });
-
-                document.body.appendChild(form);
-                form.target = "_blank"
-                console.log(form)
-                form.submit();
+            if (paymentMethod === "card" ) {
+                document.querySelector(".qwer").submit()
             } else {
+                window.location.href = "/thankyou"
                 console.log("Оплата готівкою або помилка", data);
             }
         } catch (error) {
@@ -181,6 +159,7 @@ const Basket = ({ bars }) => {
             localStorage.setItem("cart", JSON.stringify(products));
     }, [products]);
 
+    const [minSUmm, setMinSumm] = useState(true)
 
 
     useEffect(() => {
@@ -264,12 +243,14 @@ const Basket = ({ bars }) => {
                 <input type="hidden" name="merchantSignature" value={signature} />
 
             </form>
-            {!signature ? <div>Загрузка...</div> : ""}
+            {!signature ? <div></div> : ""}
 
-            {products1 < 200 ? (
-                <OrderSumMin t={true} />
-            ) : (
+
                 <>
+                    {products1 < 200 && minSUmm ?
+
+                        <OrderSumMin t={true} setMinSumm={setMinSumm} minSUmm={minSUmm}/>
+                        : ""}
                     <Header products={products} setProducts={setProducts} />
                     <div className="basket_page">
                         <div className="basket_details">
@@ -480,7 +461,7 @@ const Basket = ({ bars }) => {
                                                 handleWayforpay()
                                             }else{
                                                 handleWayforpay()
-                                                document.querySelector(".qwer").submit()
+
                                             }
 
 
@@ -499,25 +480,47 @@ const Basket = ({ bars }) => {
                                 НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
                             </div>
                             <div className="for_over">
-                                <div className="bars_block_products">
-                                    {bars.map((e) => (
-                                        <ProductCard
-                                            namee={e.name}
-                                            description={e.description}
-                                            image={e.image}
-                                            price={e.price}
-                                            href={e.href}
-                                            products={products}
-                                            setProducts={setProducts}
-                                        />
-                                    ))}
-                                </div>
+                                {window.innerWidth > 1000 ?
+                                    <div className="bars_block_products">
+
+                                        {bars.map((e) =>
+                                            <ProductCard
+                                                namee={e.name}
+                                                description={e.description}
+                                                image={e.image}
+                                                price={e.price}
+                                                href = {e.href}
+                                            />
+                                        )}
+                                    </div> : <Swiper
+                                        spaceBetween={16}
+                                        slidesPerView={window.innerWidth/230}
+                                        pagination={{ clickable: true }}
+                                        modules={[Pagination]}
+                                        breakpoints={{
+                                            768: { slidesPerView: 1 }, // для планшетов
+                                            1024: { slidesPerView: 3 }, // для десктопа
+                                        }}
+                                    >
+                                        {bars.map((e, index) => (
+                                            <SwiperSlide key={index}>
+                                                <ProductCard
+                                                    namee={e.name}
+                                                    description={e.description}
+                                                    image={e.image}
+                                                    price={e.price}
+                                                    href={e.href}
+                                                />
+                                            </SwiperSlide>
+                                        ))}
+                                    </Swiper>
+                                }
                             </div>
                         </div>
                     </div>
                     <Footer />
                 </>
-            )}
+
         </>
     );
 };

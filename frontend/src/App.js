@@ -76,6 +76,7 @@ function App() {
             lastPhrase: "Смак фініків і гарбузового насіння, який працює на тебе, коли треба зловити фокус і бути в потоці."
         }
         ]
+
     const powders = [
         {
             name: "манго-банан",
@@ -235,7 +236,7 @@ function App() {
         <div className="App">
 
 
-            {window.innerWidth <= 768 ?
+            {window.innerWidth <= 1000 ?
                 <div className="mobile_menu start_pos_mob_menu">
                    <a href = "/#bars" onClick={() => {
                        document.querySelector(".mobile_menu").classList.toggle("start_pos_mob_menu")

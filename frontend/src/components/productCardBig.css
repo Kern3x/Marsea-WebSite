@@ -1,6 +1,6 @@
 .product_card_big{
     width: 430px;
-    height: 390px;
+    max-height: 390px;
     border: 1px solid #CCD7E2;
     background: #FCFCFC;
     border-radius: 30px;

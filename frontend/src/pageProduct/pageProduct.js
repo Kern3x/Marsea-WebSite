@@ -14,6 +14,11 @@ import mob_cart from "../components/images/mob_cart.svg";
 import footer_logo from "../components/images/logo_footer.svg";
 import insta from "../mainPage/images/inst.svg";
 import telegram from "../mainPage/images/telegram.svg";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper/modules';
+
 const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProduct, lastPhrase, composition}) => {
 
     const [products1, setProducts1] = useState(0)
@@ -33,7 +38,7 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
 
         setProducts(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
-        if(window.innerWidth <= 768) {
+        if(window.innerWidth <= 1000) {
 
             document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
         }else{
@@ -118,7 +123,11 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                 </div>
             </div>
             <div className = "marsea_line">
-                <div className = "line_images">
+                {window.innerWidth > 1000 ?  <div className="line_images">
+                    {Array.from({ length: Math.floor(window.innerWidth / 180)  }).map((_, index) => (
+                        <img key={index} src={marseaLine} alt="" />
+                    ))}
+                </div> : <div className = "line_images">
                     <img src = {marseaLine} alt = ""/>
                     <img src = {marseaLine} alt = ""/>
                     <img src = {marseaLine} alt = ""/>
@@ -126,7 +135,13 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                     <img src = {marseaLine} alt = ""/>
                     <img src = {marseaLine} alt = ""/>
                     <img src = {marseaLine} alt = ""/>
-                </div>
+                    <img src = {marseaLine} alt = ""/>
+                    <img src = {marseaLine} alt = ""/>
+                    <img src = {marseaLine} alt = ""/>
+                    <img src = {marseaLine} alt = ""/>
+                    <img src = {marseaLine} alt = ""/>
+                </div>}
+
             </div>
             <div className = "kombucha_block">
                 <div className = "kombucha_block_h1">
@@ -137,6 +152,7 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                     ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
                 </div>
                 <div className = "for_over">
+                    {window.innerWidth > 1000 ?
                 <div className="bars_block_products">
 
                     {bars.map((e) =>
@@ -148,12 +164,34 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                             href = {e.href}
                         />
                     )}
-                </div>
+                </div> : <Swiper
+                            spaceBetween={16}
+                            slidesPerView={window.innerWidth/230}
+                            pagination={{ clickable: true }}
+                            modules={[Pagination]}
+                            breakpoints={{
+                                768: { slidesPerView: 1 }, // для планшетов
+                                1024: { slidesPerView: 3 }, // для десктопа
+                            }}
+                        >
+                            {bars.map((e, index) => (
+                                <SwiperSlide key={index}>
+                                    <ProductCard
+                                        namee={e.name}
+                                        description={e.description}
+                                        image={e.image}
+                                        price={e.price}
+                                        href={e.href}
+                                    />
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+                    }
                 </div>
             </div>
         </div>
             <div className = "footer" onLoad={(e) => {
-               if( window.innerWidth < 768){ e.currentTarget.style.cssText = "margin-bottom:109px"}
+               if( window.innerWidth <= 1000){ e.currentTarget.style.cssText = "margin-bottom:109px"}
             }}>
                 <div className = "footer_logo_menu">
                     <div className = "footer_logo_block">
@@ -167,15 +205,15 @@ const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProd
                         <a href="#set">набори</a>
                     </div>
                     <div className = "society_footer">
-                        <div><a href = "https://www.instagram.com/marsea.official?igsh=OW04ZHRjMHYyNWgx" target = "_blank">{window.innerWidth <= 768 ? <img src={insta} alt = "" /> : "instagram"}</a></div>
-                        <div><a href = "https://t.me/marsi2k19" target = "_blank">{window.innerWidth <= 768 ? <img src={telegram} alt = "" /> : "telegram"}</a></div>
+                        <div><a href = "https://www.instagram.com/marsea.official?igsh=OW04ZHRjMHYyNWgx" target = "_blank">{window.innerWidth <= 1000 ? <img src={insta} alt = "" /> : "instagram"}</a></div>
+                        <div><a href = "https://t.me/marsi2k19" target = "_blank">{window.innerWidth <= 1000 ? <img src={telegram} alt = "" /> : "telegram"}</a></div>
                     </div>
                 </div>
                 <div className = "copyright_marsea">
                     ©2025, Marsea
                 </div>
             </div>
-            {window.innerWidth <= 768 ? <div className = "button_order">
+            {window.innerWidth <= 1000 ? <div className = "button_order">
                 <button className = "order_button fix" onClick={() => {
                     addToCart1()
                     document.querySelector(".modal_cart_allscreen").classList.add("opacity_mob")

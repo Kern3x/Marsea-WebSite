@@ -2,7 +2,7 @@
     width: 100%;
     margin-top: 120px;
 }
-@media screen and (min-width: 768px){
+@media screen and (min-width: 1000px){
     .page_product{
 
         margin-bottom: 100px;

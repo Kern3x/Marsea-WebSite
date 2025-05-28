@@ -70,3 +70,22 @@ button{
 .main_banner_block_info{
     overflow:hidden;
 }
+.main{
+    width: 100%;
+}
+.swiper-pagination-bullet-active{
+    background: #7B181E !important;
+    width: 5px !important;
+    height: 5px !important;
+}
+.swiper-pagination-bullet{
+    width: 5px !important;
+    height: 5px !important;
+}
+.swiper{
+    margin-top: 10px;
+}
+.swiper-pagination{
+    position: relative !important;
+    margin-top: 15px;
+}

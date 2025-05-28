@@ -46,7 +46,7 @@ const Header = () => {
                     <img src={logo} alt=""/>
                 </a>
             </div>
-            {window.innerWidth <= 768 ?
+            {window.innerWidth <= 1000 ?
                 <div className="burger_menu" onClick={() => {
                     document.querySelector(".mobile_menu").classList.toggle("start_pos_mob_menu")
                 }}>

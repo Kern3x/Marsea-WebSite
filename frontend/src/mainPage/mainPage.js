@@ -1,5 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import "./mainPageStyle.css"
+import "../App.css"
 import main_banner from "./images/main_banner.png"
 import basket from "../components/images/basket.svg";
 import mob_cart from "../components/images/mob_cart.svg";
@@ -18,6 +19,10 @@ import CartContext from "../CartContext";
 import "./mainPageAdaptive.css"
 import axios from "axios";
 import Footer from "../components/Footer";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper/modules';
 
 const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
 
@@ -167,32 +172,62 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         ЦЕ НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
                     </div>
                     <div className="for_over">
-                        <div className="bars_block_products">
+                        {window.innerWidth > 1000 ?
+                            <div className="bars_block_products">
 
-                            {bars.map((e) =>
-                                <ProductCard
-                                    namee={e.name}
-                                    description={e.description}
-                                    image={e.image}
-                                    price={e.price}
-                                    href={e.href}
-                                    products={products}
-                                    setProducts={setProducts}
-                                />
-                            )}
-                        </div>
+                                {bars.map((e) =>
+                                    <ProductCard
+                                        namee={e.name}
+                                        description={e.description}
+                                        image={e.image}
+                                        price={e.price}
+                                        href = {e.href}
+                                    />
+                                )}
+                            </div> : <Swiper
+                                spaceBetween={16}
+                                slidesPerView={Number(window.innerWidth/230).toFixed(2)}
+                                pagination={{ clickable: true }}
+                                modules={[Pagination]}
+                                breakpoints={{
+                                    768: { slidesPerView: 1 }, // для планшетов
+                                    1024: { slidesPerView: 3 }, // для десктопа
+                                }}
+                            >
+                                {bars.map((e, index) => (
+                                    <SwiperSlide key={index}>
+                                        <ProductCard
+                                            namee={e.name}
+                                            description={e.description}
+                                            image={e.image}
+                                            price={e.price}
+                                            href={e.href}
+                                        />
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        }
                     </div>
                 </div>
                 <div className="marsea_line">
-                    <div className="line_images">
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                    </div>
+                    {window.innerWidth > 1000 ?  <div className="line_images">
+                        {Array.from({ length: Math.floor(window.innerWidth / 180)  }).map((_, index) => (
+                            <img key={index} src={marseaLine} alt="" />
+                        ))}
+                    </div> : <div className = "line_images">
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                    </div>}
                     <div className="desc_marsea_line">
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
@@ -232,18 +267,44 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         .Додавай у смузі, йогурт або воду — і отримуй результат.
                     </div>
                     <div className="for_over">
-                        <div className="powder_block_products">
-                            {powders.map((e) => <ProductCard
-                                namee={e.name}
-                                description={e.description}
-                                image={e.image}
-                                price={e.price}
-                                href={e.href}
-                                products={products}
-                                setProducts={setProducts}
-                            />)}
+                        {window.innerWidth > 1000 ?
+                            <div className="powder_block_products">
 
-                        </div>
+                                {powders.map((e) => <ProductCard
+                                    namee={e.name}
+                                    description={e.description}
+                                    image={e.image}
+                                    price={e.price}
+                                    href={e.href}
+                                    products={products}
+                                    setProducts={setProducts}
+                                />)}
+                            </div> : <Swiper
+                                spaceBetween={16}
+                                slidesPerView={Number(window.innerWidth/230).toFixed(2)}
+                                pagination={{ clickable: true }}
+                                modules={[Pagination]}
+                                breakpoints={{
+                                    768: { slidesPerView: 1 }, // для планшетов
+                                    1024: { slidesPerView: 3 }, // для десктопа
+                                }}
+                            >
+                                {powders.map((e, index) => (
+                                    <SwiperSlide key={index}>
+                                        <ProductCard
+                                            namee={e.name}
+                                            description={e.description}
+                                            image={e.image}
+                                            price={e.price}
+                                            href={e.href}
+                                            products={products}
+                                            setProducts={setProducts}
+                                        />
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        }
+
                     </div>
                 </div>
                 <a name="beautycombo"></a>
@@ -272,15 +333,24 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                     </div>
                 </div>
                 <div className="marsea_line">
-                    <div className="line_images">
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                        <img src={marseaLine} alt=""/>
-                    </div>
+                    {window.innerWidth > 1000 ?  <div className="line_images">
+                        {Array.from({ length: Math.floor(window.innerWidth / 180)  }).map((_, index) => (
+                            <img key={index} src={marseaLine} alt="" />
+                        ))}
+                    </div> : <div className = "line_images">
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                        <img src = {marseaLine} alt = ""/>
+                    </div>}
                     <div className="desc_marsea_line">
                         <div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
@@ -306,20 +376,46 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         Для тих, хто обирає користь без компромісів у смаку.
                     </div>
                     <div className="for_over">
-                        <div className="kombucha_block_products">
-                            {kombucha.map((e) =>
-                                <ProductCard
-                                    namee={e.name}
-                                    description={e.description}
-                                    image={e.image}
-                                    price={e.price}
-                                    href={e.href}
-                                    products={products}
-                                    setProducts={setProducts}
-                                />
-                            )}
+                        {window.innerWidth > 1000 ?
+                            <div className="kombucha_block_products">
 
-                        </div>
+                                {kombucha.map((e) =>
+                                    <ProductCard
+                                        namee={e.name}
+                                        description={e.description}
+                                        image={e.image}
+                                        price={e.price}
+                                        href={e.href}
+                                        products={products}
+                                        setProducts={setProducts}
+                                    />
+                                )}
+                            </div> : <Swiper
+                                spaceBetween={16}
+                                slidesPerView={Number(window.innerWidth/230).toFixed(2)}
+                                pagination={{ clickable: true }}
+                                modules={[Pagination]}
+                                breakpoints={{
+                                    768: { slidesPerView: 1 }, // для планшетов
+                                    1024: { slidesPerView: 3 }, // для десктопа
+                                }}
+                            >
+                                {kombucha.map((e, index) => (
+                                    <SwiperSlide key={index}>
+                                        <ProductCard
+                                            namee={e.name}
+                                            description={e.description}
+                                            image={e.image}
+                                            price={e.price}
+                                            href={e.href}
+                                            products={products}
+                                            setProducts={setProducts}
+                                        />
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        }
+
                     </div>
                 </div>
                 <a name="showbox"></a>
@@ -348,18 +444,46 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         природи у великому форматі, щоб наповнювати твоє тіло корисним щодня.
                     </div>
                     <div className="for_over">
-                        <div className="set_block_products">
-                            {sets.map((e) => <ProductCard
-                                namee={e.name}
-                                description={e.description}
-                                image={e.image}
-                                price={e.price}
-                                href={e.href}
-                                products={products}
-                                setProducts={setProducts}
-                            />)}
+                        {window.innerWidth > 767 ?
+                            <div className="set_block_products">
 
-                        </div>
+                                {sets.map((e) =>
+                                    <ProductCard
+                                        namee={e.name}
+                                        description={e.description}
+                                        image={e.image}
+                                        price={e.price}
+                                        href={e.href}
+                                        products={products}
+                                        setProducts={setProducts}
+                                    />
+                                )}
+                            </div> : <Swiper
+                                spaceBetween={16}
+                                slidesPerView={Number(window.innerWidth/230).toFixed(2)}
+                                pagination={{ clickable: true }}
+                                modules={[Pagination]}
+                                breakpoints={{
+                                    768: { slidesPerView: 1 }, // для планшетов
+                                    1024: { slidesPerView: 3 }, // для десктопа
+                                }}
+                            >
+                                {sets.map((e, index) => (
+                                    <SwiperSlide key={index}>
+                                        <ProductCard
+                                            namee={e.name}
+                                            description={e.description}
+                                            image={e.image}
+                                            price={e.price}
+                                            href={e.href}
+                                            products={products}
+                                            setProducts={setProducts}
+                                        />
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        }
+
                     </div>
                 </div>
             </div>

@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import config
 from app.utils.tg_api_helper import TelegramAPIHelper
-from app.utils.wayforpay_module import create_signature
 from app.utils.schemas import PaymentRequest, WayForPayCallback
+from app.utils.wayforpay_module import create_signature, format_decimal
 
 
 app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
@@ -36,9 +36,7 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     if data.payment_method == "cod":
         order_reference = data.order_reference or str(uuid.uuid4())
         msg = tg_api.build_telegram_message(order_reference, data)
-
         background_tasks.add_task(tg_api.send_message, msg)
-
         return {"status": "cod", "order_reference": order_reference}
 
     order_reference = data.order_reference or str(uuid.uuid4())
@@ -48,20 +46,23 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     product_prices = [item.price for item in data.cart]
     product_counts = [item.quantity for item in data.cart]
 
+    # Форматуємо всі числа до str із .00
+    amount_str = format_decimal(data.amount)
+    product_prices_str = [format_decimal(p) for p in product_prices]
+
+    # Генерація сигнатури
     sign_data = [
         base_config.MERCHANT_ACCOUNT,
         base_config.WEBSITE_DOMAIN,
         order_reference,
         order_date,
-        data.amount,
+        amount_str,
         data.currency,
         *product_names,
         *product_counts,
-        *product_prices,
+        *product_prices_str,
     ]
-
-    __data = create_signature(sign_data)
-    signature = __data[1]
+    joined, signature = create_signature(sign_data)
 
     pending_orders[order_reference] = data
 
@@ -74,10 +75,10 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
                 "merchantDomainName": base_config.WEBSITE_DOMAIN,
                 "orderReference": order_reference,
                 "orderDate": order_date,
-                "amount": data.amount,
+                "amount": amount_str,
                 "currency": data.currency,
                 "productName": product_names,
-                "productPrice": product_prices,
+                "productPrice": product_prices_str,
                 "productCount": product_counts,
                 "clientName": data.client_name,
                 "clientEmail": data.client_email,
@@ -86,7 +87,7 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
                 "serviceUrl": base_config.CALLBACK_URL,
                 "merchantSignature": signature,
             },
-            "joined": __data[0],
+            "joined": joined,
         }
     )
 

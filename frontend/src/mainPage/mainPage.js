@@ -182,6 +182,8 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                         image={e.image}
                                         price={e.price}
                                         href = {e.href}
+                                        setProducts={setProducts}
+                                        products={products}
                                     />
                                 )}
                             </div> : <Swiper
@@ -202,6 +204,8 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                             image={e.image}
                                             price={e.price}
                                             href={e.href}
+                                            products={products}
+                                            setProducts={setProducts}
                                         />
                                     </SwiperSlide>
                                 ))}

@@ -41,7 +41,7 @@ const Basket = ({ bars }) => {
 
 
     const [signature, setSignature] = useState("");
-    const [merchantAccount, setMerchantAccount] = useState("marsea_shop_com")
+    const [merchantAccount, setMerchantAccount] = useState("freelance_user_66f5183794ca1")
     const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com")
     const [rand, setRand] = useState(Math.floor(Date.now() / 1000))
     const [rand1, setRand1] = useState(Math.floor(Date.now() / 10))
@@ -158,6 +158,7 @@ const Basket = ({ bars }) => {
         );
             localStorage.setItem("cart", JSON.stringify(products));
     }, [products]);
+    const [t,setT] = useState(false)
 
     const [minSUmm, setMinSumm] = useState(true)
 
@@ -239,7 +240,7 @@ const Basket = ({ bars }) => {
                 <input type="hidden" name="clientEmail" value="" />
                 <input type="hidden" name="defaultPaymentSystem" value="" />
                 <input type="hidden" name="returnUrl" value="https://marsea-shop.com/thankyou" />
-                <input type="hidden" name="serviceUrl" value="http://localhost:3001/wayforpay-callback" />
+                <input type="hidden" name="serviceUrl" value="https://marsea-shop.com/api/pay-callback" />
                 <input type="hidden" name="merchantSignature" value={signature} />
 
             </form>
@@ -249,7 +250,7 @@ const Basket = ({ bars }) => {
                 <>
                     {products1 < 200 && minSUmm ?
 
-                        <OrderSumMin t={true} setMinSumm={setMinSumm} minSUmm={minSUmm}/>
+                        <OrderSumMin t={t} setMinSumm={setMinSumm} minSUmm={minSUmm}/>
                         : ""}
                     <Header products={products} setProducts={setProducts} />
                     <div className="basket_page">
@@ -457,10 +458,10 @@ const Basket = ({ bars }) => {
                                     <button
                                         className="order_button_next"
                                         onClick={() => {
-                                            if (paymentMethod === "cod"){
+                                            if (products1 >= 200){
                                                 handleWayforpay()
                                             }else{
-                                                handleWayforpay()
+
 
                                             }
 
@@ -490,6 +491,8 @@ const Basket = ({ bars }) => {
                                                 image={e.image}
                                                 price={e.price}
                                                 href = {e.href}
+                                                products={products}
+                                                setProducts={setProducts}
                                             />
                                         )}
                                     </div> : <Swiper
@@ -510,6 +513,8 @@ const Basket = ({ bars }) => {
                                                     image={e.image}
                                                     price={e.price}
                                                     href={e.href}
+                                                    products={products}
+                                                    setProducts={setProducts}
                                                 />
                                             </SwiperSlide>
                                         ))}

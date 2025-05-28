@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import config
 from app.utils.tg_api_helper import TelegramAPIHelper
 from app.utils.schemas import PaymentRequest, WayForPayCallback
+from app.utils.storage import save_order, get_order, delete_order
 from app.utils.wayforpay_module import create_signature, format_decimal
 
 
@@ -15,7 +16,6 @@ app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
 tg_api = TelegramAPIHelper()
 
 base_config = config.get("base")
-pending_orders: dict[str, PaymentRequest] = {}
 
 origins = [
     "http://localhost:3000",
@@ -64,7 +64,7 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     ]
     joined, signature = create_signature(sign_data)
 
-    pending_orders[order_reference] = data
+    save_order(order_reference, data.dict())
 
     return JSONResponse(
         {
@@ -97,11 +97,12 @@ async def payment_callback(
     callback: WayForPayCallback, background_tasks: BackgroundTasks
 ):
     if callback.transactionStatus == "Approved":
-        order_data = pending_orders.get(callback.orderReference)
+        order_data = get_order(callback.orderReference)
 
         if order_data:
-            msg = tg_api.build_telegram_message(callback.orderReference, order_data)
-            del pending_orders[callback.orderReference]
+            delete_order(callback.orderReference)
+            payment_request = PaymentRequest(**order_data)
+            msg = tg_api.build_telegram_message(callback.orderReference, payment_request)
         else:
             msg = (
                 f"✅ Оплата без збережених деталей.\n"
@@ -114,3 +115,4 @@ async def payment_callback(
         return {"orderReference": callback.orderReference, "status": "accept"}
 
     return {"orderReference": callback.orderReference, "status": "reject"}
+ 

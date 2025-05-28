@@ -1,12 +1,11 @@
 import React from 'react';
 import "./order_summ.css"
 import kr from "./images/bitcoin-icons_plus-outline.svg"
-const OrderSumMin = ({t,minSUmm, setMinSumm}) => {
+const OrderSumMin = ({t}) => {
 
     return (
         <div className = "order_summ_min" onClick={(e) => {
             e.currentTarget.classList.remove("dis_block_summ")
-            setMinSumm(false)
         }} onLoad = {(e) => {
             if (t){
             e.currentTarget.classList.add("dis_block_summ")
@@ -20,7 +19,7 @@ const OrderSumMin = ({t,minSUmm, setMinSumm}) => {
             }}>
                 <img src={kr} alt = "" onClick = {() => {
                     document.querySelector(".order_summ_min").classList.remove("dis_block_summ")
-                    setMinSumm(false)
+
                 }}/>
                 <div className = "text_min_summ">
                     <div className = "min_summ_h1">Мінімальна сума замовлення - 200 грн.</div>

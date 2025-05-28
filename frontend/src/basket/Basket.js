@@ -14,8 +14,8 @@ import CartContext from "../CartContext";
 import axios from "axios";
 import Footer from "../components/Footer";
 import OrderSumMin from "../components/OrderSumMin";
-import {Swiper, SwiperSlide} from "swiper/react";
-import {Pagination} from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
 
 const customStyles = {
     control: (base) => ({
@@ -34,34 +34,17 @@ const customStyles = {
 };
 
 const Basket = ({ bars }) => {
-
-
-
     const { products, setProducts } = useContext(CartContext);
 
-
     const [signature, setSignature] = useState("");
-    const [merchantAccount, setMerchantAccount] = useState("freelance_user_66f5183794ca1")
-    const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com")
-    const [rand, setRand] = useState(Math.floor(Date.now() / 1000))
-    const [rand1, setRand1] = useState(Math.floor(Date.now() / 10))
-    const [summ, setSumm] = useState(123.00)
-    const [productNameState, setProductNameState] = useState([])
-    const [productPriceState, setProductPriceState] = useState([])
-    const [productCountState, setProductCountState] = useState([])
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const [merchantAccount, setMerchantAccount] = useState("freelance_user_66f5183794ca1");
+    const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com");
+    const [orderDate, setOrderDate] = useState(""); // Renamed from rand for clarity
+    const [orderReference, setOrderReference] = useState(""); // Renamed from rand1 for clarity
+    const [amount, setAmount] = useState(""); // Changed initial state to empty string, and ensured it's a string later
+    const [productNameState, setProductNameState] = useState([]);
+    const [productPriceState, setProductPriceState] = useState([]);
+    const [productCountState, setProductCountState] = useState([]);
 
     const [deliveryMethod, setDeliveryMethod] = useState("np_branch");
     const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -93,7 +76,7 @@ const Basket = ({ bars }) => {
             }))
         : [];
 
-    const [products1, setProducts1] = useState(0);
+    const [totalProductsPrice, setTotalProductsPrice] = useState(0); // Renamed from products1 for clarity
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
@@ -101,6 +84,9 @@ const Basket = ({ bars }) => {
     const [street, setStreet] = useState("");
     const [house, setHouse] = useState("");
     const [flat, setFlat] = useState("");
+
+    // Ref to the WayForPay form
+    const wayforpayFormRef = React.useRef(null);
 
     const handleWayforpay = async () => {
         const cart = products.map((e) => ({
@@ -110,7 +96,7 @@ const Basket = ({ bars }) => {
         }));
 
         const payload = {
-            amount: products1,
+            amount: totalProductsPrice,
             currency: "UAH",
             cart,
             client_name: name,
@@ -129,45 +115,57 @@ const Basket = ({ bars }) => {
         };
 
         try {
-            const response = await axios.post(
-                "https://marsea-shop.com/api/pay",
-                payload
-            );
+            const response = await axios.post("https://marsea-shop.com/api/pay", payload);
             const data = response.data;
-            console.log(data)
 
-            if (paymentMethod === "card" ) {
-                document.querySelector(".qwer").submit()
+            if (paymentMethod === "card") {
+                const data1 = data.params; // Your backend should return params directly if it's handling the WayForPay request
+                // console.log(data1);
+
+                setSignature(data1.merchantSignature);
+                setOrderDate(data1.orderDate);
+                setOrderReference(data1.orderReference);
+                setAmount(String(data1.amount)); // Ensure amount is a string
+
+                // Do NOT submit the form here directly.
+                // The useEffect will handle the submission once state is updated.
             } else {
-                window.location.href = "/thankyou"
-                console.log("Оплата готівкою або помилка", data);
+                window.location.href = "https://marsea-shop.com/thankyou";
+                // console.log("Оплата готівкою або помилка", data);
             }
         } catch (error) {
             console.error("Помилка при оформленні замовлення", error);
+            // You might want to show an error message to the user here
         }
     };
 
-
     useEffect(() => {
-        setProducts1(
+        setTotalProductsPrice(
             products.reduce(
                 (accumulator, currentValue) =>
                     accumulator + currentValue.quantity * currentValue.price,
                 0
             )
         );
-            localStorage.setItem("cart", JSON.stringify(products));
+        localStorage.setItem("cart", JSON.stringify(products));
     }, [products]);
-    const [t,setT] = useState(false)
 
-    const [minSUmm, setMinSumm] = useState(true)
-
+    useEffect(() => {
+        // This useEffect will trigger ONLY when signature, orderDate, orderReference, or amount change.
+        // This ensures the form is submitted only when all necessary data is available.
+        if (signature && orderDate && orderReference && amount && paymentMethod === "card") {
+            if (wayforpayFormRef.current) {
+                wayforpayFormRef.current.target = "_blank"; // Open in a new tab
+                wayforpayFormRef.current.submit();
+            }
+        }
+    }, [signature, orderDate, orderReference, amount, paymentMethod]); // Dependencies for this effect
 
     useEffect(() => {
         if (!products || products.length === 0) return;
 
         const names = products.map((e) => e.namee);
-        const prices = products.map((e) => e.price);
+        const prices = products.map((e) => String(`${e.price}.00`));
         const counts = products.map((e) => e.quantity);
 
         setProductNameState(names);
@@ -175,357 +173,316 @@ const Basket = ({ bars }) => {
         setProductCountState(counts);
     }, [products]);
 
-    useEffect(() => {
-        if (
-            productNameState.length === 0 ||
-            productPriceState.length === 0 ||
-            productCountState.length === 0
-        )
-            return;
-
-        const fetchSignature = async () => {
-            const res = await fetch("http://localhost:3001/generate-signature", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    merchantAccount: merchantAccount,
-                    merchantDomainName: merchantDomainName,
-                    orderReference: rand1,
-                    orderDate: rand,
-                    amount: products1,
-                    currency: "UAH",
-                    productName: productNameState,
-                    productCount: productCountState,
-                    productPrice: productPriceState,
-                }),
-            });
-
-            const data = await res.json();
-            console.log("Подпись:", data.signature);
-            setSignature(data.signature);
-        };
-
-        fetchSignature();
-    }, [productNameState, productPriceState, productCountState]);
-
-
-
-    // Пока подпись не загружена — не рендерим форму
-
     return (
         <>
             <form
                 method="post"
                 action="https://secure.wayforpay.com/pay"
                 acceptCharset="utf-8"
-                className = "qwer"
+                className="qwer"
+                ref={wayforpayFormRef} // Assign ref to the form
             >
                 <input type="hidden" name="merchantAccount" value={merchantAccount} />
                 <input type="hidden" name="merchantAuthType" value="" />
                 <input type="hidden" name="merchantDomainName" value={merchantDomainName} />
-                <input type="hidden" name="orderReference" value={rand1} />
-                <input type="hidden" name="orderDate" value={rand} />
-                <input type="hidden" name="amount" value={products1} />
+                <input type="hidden" name="orderReference" value={orderReference} />
+                <input type="hidden" name="orderDate" value={orderDate} />
+                <input type="hidden" name="amount" value={amount} />
                 <input type="hidden" name="currency" value="UAH" />
                 <input type="hidden" name="orderTimeout" value="" />
-                {productNameState.map((e) => <input type="hidden" name="productName[]" value={e} />)}
-                {productPriceState.map((e) => <input type="hidden" name="productPrice[]" value={e} />)}
-                {productCountState.map((e) => <input type="hidden" name="productCount[]" value={e} />)}
-                <input type="hidden" name="clientFirstName" value="" />
+                {productNameState.map((e, i) => (
+                    <input key={`name-${i}`} type="hidden" name="productName[]" value={e} />
+                ))}
+                {productPriceState.map((e, i) => (
+                    <input key={`price-${i}`} type="hidden" name="productPrice[]" value={e} />
+                ))}
+                {productCountState.map((e, i) => (
+                    <input key={`count-${i}`} type="hidden" name="productCount[]" value={e} />
+                ))}
+                <input type="hidden" name="clientFirstName" value={name} /> {/* Populate client info */}
                 <input type="hidden" name="clientLastName" value="" />
-                <input type="hidden" name="clientAddress" value="" />
-                <input type="hidden" name="clientCity" value="" />
-                <input type="hidden" name="clientEmail" value="" />
+                <input type="hidden" name="clientAddress" value={`${street}, ${house}, ${flat}`} />
+                <input type="hidden" name="clientCity" value={selectedCity?.value} />
+                <input type="hidden" name="clientEmail" value={email} />
                 <input type="hidden" name="defaultPaymentSystem" value="" />
                 <input type="hidden" name="returnUrl" value="https://marsea-shop.com/thankyou" />
                 <input type="hidden" name="serviceUrl" value="https://marsea-shop.com/api/pay-callback" />
                 <input type="hidden" name="merchantSignature" value={signature} />
-
             </form>
-            {!signature ? <div></div> : ""}
 
-
-                <>
-                    {products1 < 200 && minSUmm ?
-
-                        <OrderSumMin t={t} setMinSumm={setMinSumm} minSUmm={minSUmm}/>
-                        : ""}
-                    <Header products={products} setProducts={setProducts} />
-                    <div className="basket_page">
-                        <div className="basket_details">
-                            <div className="products_details">
-                                <div className="details_text">деталі замовлення</div>
-                                <div className="details_quantity">
-                                    {products.map((e, i) => (
-                                        <BasketElement
-                                            key={i}
-                                            image={e.image}
-                                            namee={e.namee}
-                                            price={e.price}
-                                            setProducts={setProducts}
-                                            products={products}
-                                            quantity={e.quantity}
-                                        />
-                                    ))}
-                                    <div className="summ_products">
-                                        {products.length < 1 ? (
-                                            "ТУТ ПОКИ НІЧОГО НЕМАЄ"
-                                        ) : (
-                                            <>
-                                                <div>ВСЬОГО:</div>
-                                                <div className="summ">{products1}₴</div>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="order_form">
-                                <div className="order_text">данні для замовлення</div>
-                                <div className="order_details_main">
-                                    <div className="name_input">ім’я</div>
-                                    <input
-                                        type="text"
-                                        className="form_input"
-                                        placeholder="Ваше ім’я"
-                                        value={name}
-                                        onChange={(e) => {
-                                            setName(e.target.value);
-                                        }}
-                                    />
-                                    <div className="name_input">Телефон</div>
-                                    <input
-                                        type="text"
-                                        className="form_input"
-                                        placeholder="+380 (93) 993 93 93"
-                                        value={phone}
-                                        onChange={(e) => {
-                                            setPhone(e.target.value);
-                                        }}
-                                    />
-                                    <div className="name_input">пошта</div>
-                                    <input
-                                        type="text"
-                                        className="form_input"
-                                        placeholder="example@gmail.com"
-                                        value={email}
-                                        onChange={(e) => {
-                                            setEmail(e.target.value);
-                                        }}
-                                    />
-                                    <div className="name_input">КОМЕНТАР</div>
-                                    <textarea
-                                        className="form_textarea"
-                                        placeholder="Уточнення до замовлення"
-                                        value={comment}
-                                        onChange={(e) => {
-                                            setComment(e.target.value);
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="order_form_mail">
-                                    <div className="order_text">СПОСІБ ДОСТАВКИ</div>
-                                    <div className="order_details_main">
-                                        <label className="custom-checkbox checkbox_mail">
-                                            <input
-                                                type="radio"
-                                                name="delivery"
-                                                value="np_branch"
-                                                className="checkbox-input"
-                                                checked={deliveryMethod === "np_branch"}
-                                                onChange={() => setDeliveryMethod("np_branch")}
-                                            />
-                                            <span className="checkbox-custom"></span>
-                                            <img src={newMail} alt="" />
-                                            ДОСТАВКА У ВІДДІЛЕННЯ НОВОЇ ПОШТИ
-                                        </label>
-                                        <label className="custom-checkbox checkbox_mail curier_basket">
-                                            <input
-                                                type="radio"
-                                                name="delivery"
-                                                value="np_courier"
-                                                className="checkbox-input"
-                                                checked={deliveryMethod === "np_courier"}
-                                                onChange={() => setDeliveryMethod("np_courier")}
-                                            />
-                                            <span className="checkbox-custom"></span>
-                                            <img src={newMail} alt="" />
-                                            ДОСТАВКА КУР’ЄРОМ НА АДРЕСУ
-                                        </label>
-
-                                        <div className="name_input">ОБЛАСТЬ</div>
-                                        <div style={{ width: "300px", margin: "20px auto" }}>
-                                            <Select
-                                                options={regionOptions}
-                                                placeholder="ОБЛАСТЬ"
-                                                styles={customStyles}
-                                                onChange={(option) => {
-                                                    setSelectedRegion(option);
-                                                    setSelectedCity(null);
-                                                    setSelectedWarehouse(null);
-                                                }}
-                                                value={selectedRegion}
-                                                isSearchable
-                                            />
-                                            <div className="name_input">МІСТО</div>
-                                            <Select
-                                                options={cityOptions}
-                                                placeholder="МІСТО"
-                                                styles={customStyles}
-                                                onChange={(option) => {
-                                                    setSelectedCity(option);
-                                                    setSelectedWarehouse(null);
-                                                }}
-                                                value={selectedCity}
-                                                isDisabled={!selectedRegion}
-                                                isSearchable
-                                            />
-                                            {deliveryMethod === "np_branch" ? (
-                                                <>
-                                                    <div className="name_input">ВІДДІЛЕННЯ</div>
-                                                    <Select
-                                                        options={warehouseOptions}
-                                                        placeholder="ВІДДІЛЕННЯ"
-                                                        styles={customStyles}
-                                                        onChange={setSelectedWarehouse}
-                                                        value={selectedWarehouse}
-                                                        isDisabled={!selectedCity}
-                                                        isSearchable
-                                                    />
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className="name_input">ВУЛИЦЯ</div>
-                                                    <input
-                                                        className="name_input_curier"
-                                                        placeholder="ДРАГОМАНОВА 2А"
-                                                        value={street}
-                                                        onChange={(e) => {
-                                                            setStreet(e.target.value);
-                                                        }}
-                                                    />
-                                                    <div className="name_input">БУДИНОК</div>
-                                                    <input
-                                                        className="name_input_curier"
-                                                        placeholder="2"
-                                                        value={house}
-                                                        onChange={(e) => {
-                                                            setHouse(e.target.value);
-                                                        }}
-                                                    />
-                                                    <div className="name_input">квартира/офіс</div>
-                                                    <input
-                                                        className="name_input_curier"
-                                                        placeholder="2"
-                                                        value={flat}
-                                                        onChange={(e) => {
-                                                            setFlat(e.target.value);
-                                                        }}
-                                                    />
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="delivery_type">СПОСІБ ОПЛАТИ</div>
-                                    <label className="custom-checkbox checkbox_mail">
-                                        <input
-                                            type="radio"
-                                            name="payment"
-                                            value="cod"
-                                            className="checkbox-input"
-                                            checked={paymentMethod === "cod"}
-                                            onChange={() => setPaymentMethod("cod")}
-                                        />
-                                        <span className="checkbox-custom"></span>
-                                        Оплата готівкою
-                                    </label>
-                                    <label className="custom-checkbox checkbox_mail curier_basket">
-                                        <input
-                                            type="radio"
-                                            name="payment"
-                                            value="card"
-                                            className="checkbox-input"
-                                            checked={paymentMethod === "card"}
-                                            onChange={() => setPaymentMethod("card")}
-                                        />
-                                        <span className="checkbox-custom"></span>
-                                        Оплата карткою(WayForPay)
-                                    </label>
-
-                                    <button
-                                        className="order_button_next"
-                                        onClick={() => {
-                                            if (products1 >= 200){
-                                                handleWayforpay()
-                                            }else{
-
-
-                                            }
-
-
-                                        }}
-                                    >
-                                        Замовити
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bars_main_block">
-                            <div className="bars_block_h1">БАТОНЧИКИ</div>
-                            <div className="bars_block_description">
-                                glow.detox.sleep.focus - без цукру, без лактози, без глютену. ЦЕ
-                                НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
-                            </div>
-                            <div className="for_over">
-                                {window.innerWidth > 1000 ?
-                                    <div className="bars_block_products">
-
-                                        {bars.map((e) =>
-                                            <ProductCard
-                                                namee={e.name}
-                                                description={e.description}
-                                                image={e.image}
-                                                price={e.price}
-                                                href = {e.href}
-                                                products={products}
-                                                setProducts={setProducts}
-                                            />
-                                        )}
-                                    </div> : <Swiper
-                                        spaceBetween={16}
-                                        slidesPerView={window.innerWidth/230}
-                                        pagination={{ clickable: true }}
-                                        modules={[Pagination]}
-                                        breakpoints={{
-                                            768: { slidesPerView: 1 }, // для планшетов
-                                            1024: { slidesPerView: 3 }, // для десктопа
-                                        }}
-                                    >
-                                        {bars.map((e, index) => (
-                                            <SwiperSlide key={index}>
-                                                <ProductCard
-                                                    namee={e.name}
-                                                    description={e.description}
-                                                    image={e.image}
-                                                    price={e.price}
-                                                    href={e.href}
-                                                    products={products}
-                                                    setProducts={setProducts}
-                                                />
-                                            </SwiperSlide>
-                                        ))}
-                                    </Swiper>
-                                }
+            {totalProductsPrice < 200 ? <OrderSumMin t={true} /> : ""}
+            <Header products={products} setProducts={setProducts} />
+            <div className="basket_page">
+                <div className="basket_details">
+                    <div className="products_details">
+                        <div className="details_text">деталі замовлення</div>
+                        <div className="details_quantity">
+                            {products.map((e, i) => (
+                                <BasketElement
+                                    key={i}
+                                    image={e.image}
+                                    namee={e.namee}
+                                    price={e.price}
+                                    setProducts={setProducts}
+                                    products={products}
+                                    quantity={e.quantity}
+                                />
+                            ))}
+                            <div className="summ_products">
+                                {products.length < 1 ? (
+                                    "ТУТ ПОКИ НІЧОГО НЕМАЄ"
+                                ) : (
+                                    <>
+                                        <div>ВСЬОГО:</div>
+                                        <div className="summ">{totalProductsPrice}₴</div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
-                    <Footer />
-                </>
+                    <div className="order_form">
+                        <div className="order_text">данні для замовлення</div>
+                        <div className="order_details_main">
+                            <div className="name_input">ім’я</div>
+                            <input
+                                type="text"
+                                className="form_input"
+                                placeholder="Ваше ім’я"
+                                value={name}
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                }}
+                            />
+                            <div className="name_input">Телефон</div>
+                            <input
+                                type="text"
+                                className="form_input"
+                                placeholder="+380 (93) 993 93 93"
+                                value={phone}
+                                onChange={(e) => {
+                                    setPhone(e.target.value);
+                                }}
+                            />
+                            <div className="name_input">пошта</div>
+                            <input
+                                type="text"
+                                className="form_input"
+                                placeholder="example@gmail.com"
+                                value={email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                }}
+                            />
+                            <div className="name_input">КОМЕНТАР</div>
+                            <textarea
+                                className="form_textarea"
+                                placeholder="Уточнення до замовлення"
+                                value={comment}
+                                onChange={(e) => {
+                                    setComment(e.target.value);
+                                }}
+                            />
+                        </div>
 
+                        <div className="order_form_mail">
+                            <div className="order_text">СПОСІБ ДОСТАВКИ</div>
+                            <div className="order_details_main">
+                                <label className="custom-checkbox checkbox_mail">
+                                    <input
+                                        type="radio"
+                                        name="delivery"
+                                        value="np_branch"
+                                        className="checkbox-input"
+                                        checked={deliveryMethod === "np_branch"}
+                                        onChange={() => setDeliveryMethod("np_branch")}
+                                    />
+                                    <span className="checkbox-custom"></span>
+                                    <img src={newMail} alt="" />
+                                    ДОСТАВКА У ВІДДІЛЕННЯ НОВОЇ ПОШТИ
+                                </label>
+                                <label className="custom-checkbox checkbox_mail curier_basket">
+                                    <input
+                                        type="radio"
+                                        name="delivery"
+                                        value="np_courier"
+                                        className="checkbox-input"
+                                        checked={deliveryMethod === "np_courier"}
+                                        onChange={() => setDeliveryMethod("np_courier")}
+                                    />
+                                    <span className="checkbox-custom"></span>
+                                    <img src={newMail} alt="" />
+                                    ДОСТАВКА КУР’ЄРОМ НА АДРЕСУ
+                                </label>
+
+                                <div className="name_input">ОБЛАСТЬ</div>
+                                <div style={{ width: "300px", margin: "20px auto" }}>
+                                    <Select
+                                        options={regionOptions}
+                                        placeholder="ОБЛАСТЬ"
+                                        styles={customStyles}
+                                        onChange={(option) => {
+                                            setSelectedRegion(option);
+                                            setSelectedCity(null);
+                                            setSelectedWarehouse(null);
+                                        }}
+                                        value={selectedRegion}
+                                        isSearchable
+                                    />
+                                    <div className="name_input">МІСТО</div>
+                                    <Select
+                                        options={cityOptions}
+                                        placeholder="МІСТО"
+                                        styles={customStyles}
+                                        onChange={(option) => {
+                                            setSelectedCity(option);
+                                            setSelectedWarehouse(null);
+                                        }}
+                                        value={selectedCity}
+                                        isDisabled={!selectedRegion}
+                                        isSearchable
+                                    />
+                                    {deliveryMethod === "np_branch" ? (
+                                        <>
+                                            <div className="name_input">ВІДДІЛЕННЯ</div>
+                                            <Select
+                                                options={warehouseOptions}
+                                                placeholder="ВІДДІЛЕННЯ"
+                                                styles={customStyles}
+                                                onChange={setSelectedWarehouse}
+                                                value={selectedWarehouse}
+                                                isDisabled={!selectedCity}
+                                                isSearchable
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="name_input">ВУЛИЦЯ</div>
+                                            <input
+                                                className="name_input_curier"
+                                                placeholder="ДРАГОМАНОВА 2А"
+                                                value={street}
+                                                onChange={(e) => {
+                                                    setStreet(e.target.value);
+                                                }}
+                                            />
+                                            <div className="name_input">БУДИНОК</div>
+                                            <input
+                                                className="name_input_curier"
+                                                placeholder="2"
+                                                value={house}
+                                                onChange={(e) => {
+                                                    setHouse(e.target.value);
+                                                }}
+                                            />
+                                            <div className="name_input">квартира/офіс</div>
+                                            <input
+                                                className="name_input_curier"
+                                                placeholder="2"
+                                                value={flat}
+                                                onChange={(e) => {
+                                                    setFlat(e.target.value);
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="delivery_type">СПОСІБ ОПЛАТИ</div>
+                            <label className="custom-checkbox checkbox_mail">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="cod"
+                                    className="checkbox-input"
+                                    checked={paymentMethod === "cod"}
+                                    onChange={() => setPaymentMethod("cod")}
+                                />
+                                <span className="checkbox-custom"></span>
+                                Оплата готівкою
+                            </label>
+                            <label className="custom-checkbox checkbox_mail curier_basket">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="card"
+                                    className="checkbox-input"
+                                    checked={paymentMethod === "card"}
+                                    onChange={() => setPaymentMethod("card")}
+                                />
+                                <span className="checkbox-custom"></span>
+                                Оплата карткою(WayForPay)
+                            </label>
+
+                            <button
+                                className="order_button_next"
+                                onClick={() => {
+                                    if (totalProductsPrice >= 200) {
+                                        handleWayforpay();
+                                    } else {
+                                        // You might want to show a message if the total is less than 200
+                                        alert("Мінімальна сума замовлення 200₴");
+                                    }
+                                }}
+                            >
+                                Замовити
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bars_main_block">
+                    <div className="bars_block_h1">БАТОНЧИКИ</div>
+                    <div className="bars_block_description">
+                        glow.detox.sleep.focus - без цукру, без лактози, без глютену. ЦЕ
+                        НЕ ПРОСТО ПЕРЕКУС - ЦЕ ТВОЯ СУПЕРСИЛА У ФОРМАТІ БАТОНЧИКА.
+                    </div>
+                    <div className="for_over">
+                        {window.innerWidth > 1000 ? (
+                            <div className="bars_block_products">
+                                {bars.map((e, i) => (
+                                    <ProductCard
+                                        key={i} // Added key for list rendering
+                                        namee={e.name}
+                                        description={e.description}
+                                        image={e.image}
+                                        price={e.price}
+                                        href={e.href}
+                                        products={products}
+                                        setProducts={setProducts}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <Swiper
+                                spaceBetween={16}
+                                slidesPerView={window.innerWidth / 230}
+                                pagination={{ clickable: true }}
+                                modules={[Pagination]}
+                                breakpoints={{
+                                    768: { slidesPerView: 1 }, // для планшетов
+                                    1024: { slidesPerView: 3 }, // для десктопа
+                                }}
+                            >
+                                {bars.map((e, index) => (
+                                    <SwiperSlide key={index}>
+                                        <ProductCard
+                                            namee={e.name}
+                                            description={e.description}
+                                            image={e.image}
+                                            price={e.price}
+                                            href={e.href}
+                                            products={products}
+                                            setProducts={setProducts}
+                                        />
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        )}
+                    </div>
+                </div>
+            </div>
+            <Footer />
         </>
     );
 };

@@ -15,7 +15,7 @@ app = FastAPI(root_path="/api", docs_url="/docs", openapi_url="/openapi.json")
 tg_api = TelegramAPIHelper()
 
 base_config = config.get("base")
-pending_orders: dict[str, dict] = {}
+pending_orders: dict[str, PaymentRequest] = {}
 
 origins = [
     "http://localhost:3000",
@@ -48,7 +48,6 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     product_prices = [item.price for item in data.cart]
     product_counts = [item.quantity for item in data.cart]
 
-    # Виправлена структура
     sign_data = [
         base_config.MERCHANT_ACCOUNT,
         base_config.WEBSITE_DOMAIN,
@@ -63,6 +62,8 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
 
     __data = create_signature(sign_data)
     signature = __data[1]
+
+    pending_orders[order_reference] = data
 
     return JSONResponse(
         {
@@ -95,10 +96,20 @@ async def payment_callback(
     callback: WayForPayCallback, background_tasks: BackgroundTasks
 ):
     if callback.transactionStatus == "Approved":
-        background_tasks.add_task(
-            tg_api.send_message,
-            f"✅ Нова оплата!\nСума: {callback.amount} {callback.currency}\nЗамовлення: {callback.orderReference}",
-        )
+        order_data = pending_orders.get(callback.orderReference)
+
+        if order_data:
+            msg = tg_api.build_telegram_message(callback.orderReference, order_data)
+            del pending_orders[callback.orderReference]
+        else:
+            msg = (
+                f"✅ Оплата без збережених деталей.\n"
+                f"Сума: {callback.amount} {callback.currency}\n"
+                f"Замовлення: {callback.orderReference}"
+            )
+
+        background_tasks.add_task(tg_api.send_message, msg)
+
         return {"orderReference": callback.orderReference, "status": "accept"}
 
     return {"orderReference": callback.orderReference, "status": "reject"}

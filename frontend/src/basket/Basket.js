@@ -172,7 +172,7 @@ const Basket = ({ bars }) => {
     }, [products]);
     const [t,setT] = useState(false)
 
-    const [minSUmm, setMinSumm] = useState(true)
+
 
 
     useEffect(() => {
@@ -235,9 +235,9 @@ const Basket = ({ bars }) => {
 
 
                 <>
-                    {products1 < 200 && minSUmm ?
+                    {products1 < 200 ?
 
-                        <OrderSumMin t={t} setMinSumm={setMinSumm} minSUmm={minSUmm}/>
+                        <OrderSumMin t={t}/>
                         : ""}
                     <Header products={products} setProducts={setProducts} />
                     <div className="basket_page">

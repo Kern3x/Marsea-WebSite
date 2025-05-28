@@ -1,12 +1,11 @@
 import React from 'react';
 import "./order_summ.css"
 import kr from "./images/bitcoin-icons_plus-outline.svg"
-const OrderSumMin = ({t,minSUmm, setMinSumm}) => {
+const OrderSumMin = ({t}) => {
 
     return (
         <div className = "order_summ_min" onClick={(e) => {
             e.currentTarget.classList.remove("dis_block_summ")
-            setMinSumm(false)
         }} onLoad = {(e) => {
             if (t){
             e.currentTarget.classList.add("dis_block_summ")

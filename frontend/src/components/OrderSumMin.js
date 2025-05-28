@@ -19,7 +19,7 @@ const OrderSumMin = ({t}) => {
             }}>
                 <img src={kr} alt = "" onClick = {() => {
                     document.querySelector(".order_summ_min").classList.remove("dis_block_summ")
-                    setMinSumm(false)
+
                 }}/>
                 <div className = "text_min_summ">
                     <div className = "min_summ_h1">Мінімальна сума замовлення - 200 грн.</div>

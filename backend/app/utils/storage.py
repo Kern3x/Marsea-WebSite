@@ -1,7 +1,7 @@
 import json
 import redis
 
-from config import config
+from app.config import config
 
 
 base_config = config.get("base")

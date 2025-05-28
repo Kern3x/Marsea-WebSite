@@ -89,3 +89,20 @@ button{
     position: relative !important;
     margin-top: 15px;
 }
+@media screen and (max-width: 1000px){
+    .thank_you .basket_details{
+        max-width: 100% !important;
+    }
+    .thank_you .products_details {
+        margin-left: 0 !important;
+    }
+    .thank_you .basket_product {
+        width: 100% !important;
+    }
+    .thank_you .summ_products {
+        width: 100% !important;
+    }
+    .basket_page.thank_you .bars_main_block{
+margin-top: 0 !important;
+    }
+}

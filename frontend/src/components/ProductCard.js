@@ -29,7 +29,7 @@ const ProductCard = ({image, description, namee, price, href, setProducts, produ
     return (
         <div className = "product_card">
             <div className = "add_to_cart">
-                <img src = {addToCart} alt = "" onClick={addToCart1}/>
+                <img src = {addToCart} alt = "" onClick={addToCart1} loading = "lazy"/>
             </div>
             <div className = "product_image">
                <a href = {href}> <img src = {image} alt = ""/></a>
@@ -49,4 +49,4 @@ const ProductCard = ({image, description, namee, price, href, setProducts, produ
     );
 };
 
-export default ProductCard;
+export default React.memo(ProductCard);

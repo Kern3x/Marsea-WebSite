@@ -233,9 +233,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         <img loading = "lazy" src = {marseaLine} alt = ""/>
                     </div>}
                     <div className="desc_marsea_line">
-                        <div className="h1_marsea_line">
-                            ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
-                        </div>
+
                         <a  onClick={() => {
                             products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
                         }} className="marsi_a">
@@ -320,7 +318,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                     </div>
                     <div className="beauty_block_description">
                         Подвійна порція натуральних смаків: манго-банан,
-                        ягідно-фруктовий та обліпиха-черешня — по 2 саші кожного.
+                        ягідно-фруктовий та обліпиха-черешня — по 2 саше кожного.
                         Ідеальний мікс для краси та енергії.
                     </div>
                     <div className="beauty_block_products">

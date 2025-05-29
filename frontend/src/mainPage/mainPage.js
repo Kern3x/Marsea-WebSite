@@ -265,8 +265,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         порційні порошки
                     </div>
                     <div className="powder_block_description">
-                        Сублімовані фрукти — максимум користі, мінімум зусиль
-                        .Додавай у смузі, йогурт або воду — і отримуй результат.
+                        Сублімовані фрукти — максимум користі, мінімум зусиль. Додавай у смузі, йогурт або воду — і отримуй результат.
                     </div>
                     <div className="for_over">
                         {window.innerWidth > 1000 ?
@@ -354,9 +353,9 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         <img loading = "lazy" src = {marseaLine} alt = ""/>
                     </div>}
                     <div className="desc_marsea_line">
-                        <div className="h1_marsea_line">
+                        {/*<div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
-                        </div>
+                        </div>*/}
                         <a  onClick={() => {
                             products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
                         }} className="marsi_a">

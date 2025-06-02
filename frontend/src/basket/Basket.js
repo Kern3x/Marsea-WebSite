@@ -36,6 +36,29 @@ const customStyles = {
 const Basket = ({ bars }) => {
     const { products, setProducts } = useContext(CartContext);
 
+
+    const [errors, setErrors] = useState({});
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!name.trim()) newErrors.name = true;
+        if (!phone.trim()) newErrors.phone = true;
+        if (!email.trim()) newErrors.email = true;
+
+        if (!selectedRegion) newErrors.region = true;
+        if (!selectedCity) newErrors.city = true;
+
+        if (deliveryMethod === "np_branch") {
+            if (!selectedWarehouse) newErrors.warehouse = true;
+        } else {
+            if (!street.trim()) newErrors.street = true;
+            if (!house.trim()) newErrors.house = true;
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const [signature, setSignature] = useState("");
     const [merchantAccount, setMerchantAccount] = useState("freelance_user_66f5183794ca1");
     const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com");
@@ -197,7 +220,6 @@ const Basket = ({ bars }) => {
     }, [products]);
 
 
-
     useEffect(() => {
         if (!products || products.length === 0) return;
 
@@ -277,13 +299,13 @@ const Basket = ({ bars }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="order_form">
+                    <form className="order_form">
                         <div className="order_text">данні для замовлення</div>
                         <div className="order_details_main">
                             <div className="name_input">ім’я</div>
                             <input
                                 type="text"
-                                className="form_input"
+                                className={`form_input ${errors.name ? "error" : ""}`}
                                 placeholder="Ваше ім’я"
                                 value={name}
                                 onChange={(e) => {
@@ -293,7 +315,7 @@ const Basket = ({ bars }) => {
                             <div className="name_input">Телефон</div>
                             <input
                                 type="text"
-                                className="form_input"
+                                className={`form_input ${errors.phone ? "error" : ""}`}
                                 placeholder="+380 (93) 993 93 93"
                                 value={phone}
                                 onChange={(e) => {
@@ -303,7 +325,7 @@ const Basket = ({ bars }) => {
                             <div className="name_input">пошта</div>
                             <input
                                 type="text"
-                                className="form_input"
+                                className={`form_input ${errors.email ? "error" : ""}`}
                                 placeholder="example@gmail.com"
                                 value={email}
                                 onChange={(e) => {
@@ -354,6 +376,7 @@ const Basket = ({ bars }) => {
                                 <div className="name_input">ОБЛАСТЬ</div>
                                 <div style={{ width: "300px", margin: "20px auto" }}>
                                     <Select
+                                        classNamePrefix={errors.region ? "select-error" : ""}
                                         options={regionOptions}
                                         placeholder="ОБЛАСТЬ"
                                         styles={customStyles}
@@ -367,6 +390,7 @@ const Basket = ({ bars }) => {
                                     />
                                     <div className="name_input">МІСТО</div>
                                     <Select
+                                        classNamePrefix={errors.city ? "select-error" : ""}
                                         options={cityOptions}
                                         placeholder="МІСТО"
                                         styles={customStyles}
@@ -382,6 +406,7 @@ const Basket = ({ bars }) => {
                                         <>
                                             <div className="name_input">ВІДДІЛЕННЯ</div>
                                             <Select
+                                                classNamePrefix={errors.warehouse ? "select-error" : ""}
                                                 options={warehouseOptions}
                                                 placeholder="ВІДДІЛЕННЯ"
                                                 styles={customStyles}
@@ -395,7 +420,7 @@ const Basket = ({ bars }) => {
                                         <>
                                             <div className="name_input">ВУЛИЦЯ</div>
                                             <input
-                                                className="name_input_curier"
+                                                className={`name_input_curier ${errors.street ? "error" : ""}`}
                                                 placeholder="ДРАГОМАНОВА 2А"
                                                 value={street}
                                                 onChange={(e) => {
@@ -404,7 +429,7 @@ const Basket = ({ bars }) => {
                                             />
                                             <div className="name_input">БУДИНОК</div>
                                             <input
-                                                className="name_input_curier"
+                                                className={`name_input_curier ${errors.house ? "error" : ""}`}
                                                 placeholder="2"
                                                 value={house}
                                                 onChange={(e) => {
@@ -451,21 +476,26 @@ const Basket = ({ bars }) => {
                                 Оплата карткою(WayForPay)
                             </label>
 
-                            <button
-                                className="order_button_next"
-                                onClick={() => {
-                                    if (totalProductsPrice >= 200) {
-                                        handleWayforpay();
-                                    } else {
-                                        // You might want to show a message if the total is less than 200
-                                        alert("Мінімальна сума замовлення 200₴");
-                                    }
-                                }}
+                            <button type = "submit"
+                                    className="order_button_next"
+                                    onClick={(e) => {
+                                        e.preventDefault(); // Остановим отправку формы
+                                        if (totalProductsPrice < 200) {
+                                            alert("Мінімальна сума замовлення 200₴");
+                                            return;
+                                        }
+
+                                        if (validateForm()) {
+                                            handleWayforpay();
+                                        } else {
+                                            window.scrollTo({ top: 0, behavior: 'smooth' }); // Поднимем к форме
+                                        }
+                                    }}
                             >
                                 Замовити
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div className="bars_main_block">

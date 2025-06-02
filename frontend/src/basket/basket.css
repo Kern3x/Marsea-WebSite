@@ -11,6 +11,15 @@
     flex-direction: column;
     align-items: center;
 }
+.error {
+    border: 1px solid #FF2E22 !important;
+    background: #FFFAFA;
+}
+
+.select-error .react-select__control {
+    border-color: #FF2E22 !important;
+
+}
 .details_text{
     font-family: Cormorant;
     font-weight: 400;
@@ -323,8 +332,8 @@
 
     }
     .order_details_main{
-    margin-top: 0px;
-}
+        margin-top: 0px;
+    }
     .order_form{
         margin-top: 50px;
     }
@@ -372,22 +381,22 @@
         padding: 20px 15px;
     }
     .checkbox_mail{
-    width: 100%;
-    height: 54px;
-    border-radius: 40px;
-    padding: 20px 15px;
+        width: 100%;
+        height: 54px;
+        border-radius: 40px;
+        padding: 20px 15px;
 
-    font-family: Wix Madefor Display;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 120%;
-    color: #18131B;
-    text-align: center;
-}
+        font-family: Wix Madefor Display;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 120%;
+        color: #18131B;
+        text-align: center;
+    }
     .order_details_main{
         width: 100%;
     }
-   .order_form_mail .order_details_main{
+    .order_form_mail .order_details_main{
 
         margin-top: 20px;
     }

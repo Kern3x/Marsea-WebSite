@@ -91,7 +91,7 @@ const Basket = ({ bars }) => {
     const handleWayforpay = async () => {
         if (totalProductsPrice < 200) {
             alert("Мінімальна сума замовлення 200₴");
-            return; // Прекращаем выполнение, если сумма меньше 200
+            return;
         }
 
         const cart = products.map((e) => ({
@@ -124,55 +124,8 @@ const Basket = ({ bars }) => {
             const data = response.data;
 
             if (paymentMethod === "card") {
-                const wayforpayParams = data.params; // Предполагаем, что backend возвращает параметры WayForPay
-
-                // Заполняем скрытые поля формы прямо здесь
-                // Вместо использования useState и useEffect для отправки
-                const form = wayforpayFormRef.current;
-                if (form) {
-                    form.querySelector('input[name="merchantSignature"]').value = wayforpayParams.merchantSignature;
-                    form.querySelector('input[name="orderDate"]').value = wayforpayParams.orderDate;
-                    form.querySelector('input[name="orderReference"]').value = wayforpayParams.orderReference;
-                    form.querySelector('input[name="amount"]').value = String(wayforpayParams.amount);
-
-                    // Очищаем существующие hidden-поля для product arrays
-                    form.querySelectorAll('input[name="productName[]"]').forEach(input => input.remove());
-                    form.querySelectorAll('input[name="productPrice[]"]').forEach(input => input.remove());
-                    form.querySelectorAll('input[name="productCount[]"]').forEach(input => input.remove());
-
-                    // Добавляем новые hidden-поля для product arrays
-                    products.forEach(product => {
-                        const nameInput = document.createElement('input');
-                        nameInput.type = 'hidden';
-                        nameInput.name = 'productName[]';
-                        nameInput.value = product.namee;
-                        form.appendChild(nameInput);
-
-                        const priceInput = document.createElement('input');
-                        priceInput.type = 'hidden';
-                        priceInput.name = 'productPrice[]';
-                        priceInput.value = String(`${product.price}.00`);
-                        form.appendChild(priceInput);
-
-                        const countInput = document.createElement('input');
-                        countInput.type = 'hidden';
-                        countInput.name = 'productCount[]';
-                        countInput.value = product.quantity;
-                        form.appendChild(countInput);
-                    });
-
-
-                    // Обновляем поля клиентских данных
-                    form.querySelector('input[name="clientFirstName"]').value = name;
-                    form.querySelector('input[name="clientAddress"]').value = `${street}, ${house}, ${flat}`;
-                    form.querySelector('input[name="clientCity"]').value = selectedCity?.value;
-                    form.querySelector('input[name="clientEmail"]').value = email;
-
-                    // Важно: Отправляем форму НЕМЕДЛЕННО после получения данных и заполнения
-                    form.target = "_blank"; // Открыть в новой вкладке/окне
-                    form.submit();
-                }
-
+                // сохраните данные во временное состояние
+                fillAndSubmitWayforpayForm(data.params);
             } else {
                 window.location.href = "https://marsea-shop.com/thankyou";
             }
@@ -180,6 +133,56 @@ const Basket = ({ bars }) => {
             console.error("Помилка при оформленні замовлення", error);
             alert("Виникла помилка при оформленні замовлення. Будь ласка, спробуйте ще раз.");
         }
+    };
+
+    const fillAndSubmitWayforpayForm = (wayforpayParams) => {
+        // ✅ вызывается только из `handleWayforpay`, но вызов сабмита вынесен в клик-обработчик
+        setTimeout(() => {
+            const form = wayforpayFormRef.current;
+            if (!form) return;
+
+            form.querySelector('input[name="merchantSignature"]').value = wayforpayParams.merchantSignature;
+            form.querySelector('input[name="orderDate"]').value = wayforpayParams.orderDate;
+            form.querySelector('input[name="orderReference"]').value = wayforpayParams.orderReference;
+            form.querySelector('input[name="amount"]').value = String(wayforpayParams.amount);
+
+            // Удалить и пересоздать поля
+            form.querySelectorAll('input[name="productName[]"]').forEach(input => input.remove());
+            form.querySelectorAll('input[name="productPrice[]"]').forEach(input => input.remove());
+            form.querySelectorAll('input[name="productCount[]"]').forEach(input => input.remove());
+
+            products.forEach(product => {
+                const nameInput = document.createElement('input');
+                nameInput.type = 'hidden';
+                nameInput.name = 'productName[]';
+                nameInput.value = product.namee;
+                form.appendChild(nameInput);
+
+                const priceInput = document.createElement('input');
+                priceInput.type = 'hidden';
+                priceInput.name = 'productPrice[]';
+                priceInput.value = String(`${product.price}.00`);
+                form.appendChild(priceInput);
+
+                const countInput = document.createElement('input');
+                countInput.type = 'hidden';
+                countInput.name = 'productCount[]';
+                countInput.value = product.quantity;
+                form.appendChild(countInput);
+            });
+
+            form.querySelector('input[name="clientFirstName"]').value = name;
+            form.querySelector('input[name="clientAddress"]').value = `${street}, ${house}, ${flat}`;
+            form.querySelector('input[name="clientCity"]').value = selectedCity?.value;
+            form.querySelector('input[name="clientEmail"]').value = email;
+
+            form.target = "_blank";
+
+            // ✅ ОБЯЗАТЕЛЬНО вызвать submit через клик
+            const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
+            form.dispatchEvent(clickEvent); // iOS лучше воспринимает такое поведение
+            form.submit();
+        }, 0); // микрозадержка
     };
 
     useEffect(() => {

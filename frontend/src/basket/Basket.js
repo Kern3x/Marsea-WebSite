@@ -89,6 +89,11 @@ const Basket = ({ bars }) => {
     const wayforpayFormRef = React.useRef(null);
 
     const handleWayforpay = async () => {
+        if (totalProductsPrice < 200) {
+            alert("Мінімальна сума замовлення 200₴");
+            return; // Прекращаем выполнение, если сумма меньше 200
+        }
+
         const cart = products.map((e) => ({
             name: e.namee,
             price: e.price,
@@ -119,23 +124,61 @@ const Basket = ({ bars }) => {
             const data = response.data;
 
             if (paymentMethod === "card") {
-                const data1 = data.params; // Your backend should return params directly if it's handling the WayForPay request
-                // console.log(data1);
+                const wayforpayParams = data.params; // Предполагаем, что backend возвращает параметры WayForPay
 
-                setSignature(data1.merchantSignature);
-                setOrderDate(data1.orderDate);
-                setOrderReference(data1.orderReference);
-                setAmount(String(data1.amount)); // Ensure amount is a string
+                // Заполняем скрытые поля формы прямо здесь
+                // Вместо использования useState и useEffect для отправки
+                const form = wayforpayFormRef.current;
+                if (form) {
+                    form.querySelector('input[name="merchantSignature"]').value = wayforpayParams.merchantSignature;
+                    form.querySelector('input[name="orderDate"]').value = wayforpayParams.orderDate;
+                    form.querySelector('input[name="orderReference"]').value = wayforpayParams.orderReference;
+                    form.querySelector('input[name="amount"]').value = String(wayforpayParams.amount);
 
-                // Do NOT submit the form here directly.
-                // The useEffect will handle the submission once state is updated.
+                    // Очищаем существующие hidden-поля для product arrays
+                    form.querySelectorAll('input[name="productName[]"]').forEach(input => input.remove());
+                    form.querySelectorAll('input[name="productPrice[]"]').forEach(input => input.remove());
+                    form.querySelectorAll('input[name="productCount[]"]').forEach(input => input.remove());
+
+                    // Добавляем новые hidden-поля для product arrays
+                    products.forEach(product => {
+                        const nameInput = document.createElement('input');
+                        nameInput.type = 'hidden';
+                        nameInput.name = 'productName[]';
+                        nameInput.value = product.namee;
+                        form.appendChild(nameInput);
+
+                        const priceInput = document.createElement('input');
+                        priceInput.type = 'hidden';
+                        priceInput.name = 'productPrice[]';
+                        priceInput.value = String(`${product.price}.00`);
+                        form.appendChild(priceInput);
+
+                        const countInput = document.createElement('input');
+                        countInput.type = 'hidden';
+                        countInput.name = 'productCount[]';
+                        countInput.value = product.quantity;
+                        form.appendChild(countInput);
+                    });
+
+
+                    // Обновляем поля клиентских данных
+                    form.querySelector('input[name="clientFirstName"]').value = name;
+                    form.querySelector('input[name="clientAddress"]').value = `${street}, ${house}, ${flat}`;
+                    form.querySelector('input[name="clientCity"]').value = selectedCity?.value;
+                    form.querySelector('input[name="clientEmail"]').value = email;
+
+                    // Важно: Отправляем форму НЕМЕДЛЕННО после получения данных и заполнения
+                    form.target = "_blank"; // Открыть в новой вкладке/окне
+                    form.submit();
+                }
+
             } else {
                 window.location.href = "https://marsea-shop.com/thankyou";
-                // console.log("Оплата готівкою або помилка", data);
             }
         } catch (error) {
             console.error("Помилка при оформленні замовлення", error);
-            // You might want to show an error message to the user here
+            alert("Виникла помилка при оформленні замовлення. Будь ласка, спробуйте ще раз.");
         }
     };
 
@@ -150,16 +193,7 @@ const Basket = ({ bars }) => {
         localStorage.setItem("cart", JSON.stringify(products));
     }, [products]);
 
-    useEffect(() => {
-        // This useEffect will trigger ONLY when signature, orderDate, orderReference, or amount change.
-        // This ensures the form is submitted only when all necessary data is available.
-        if (signature && orderDate && orderReference && amount && paymentMethod === "card") {
-            if (wayforpayFormRef.current) {
-                wayforpayFormRef.current.target = "_blank"; // Open in a new tab
-                wayforpayFormRef.current.submit();
-            }
-        }
-    }, [signature, orderDate, orderReference, amount, paymentMethod]); // Dependencies for this effect
+
 
     useEffect(() => {
         if (!products || products.length === 0) return;

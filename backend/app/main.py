@@ -2,8 +2,8 @@ import uuid
 from datetime import datetime
 
 from fastapi.responses import JSONResponse
-from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, BackgroundTasks, Request
 
 from app.config import config
 from app.utils.tg_api_helper import TelegramAPIHelper
@@ -92,25 +92,31 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     )
 
 
-from fastapi import Request
-
-
 @app.post("/pay-callback")
 async def payment_callback(request: Request, background_tasks: BackgroundTasks):
-    data = await request.json()
-
     try:
+        data = await request.json()
         callback = WayForPayCallback(**data)
     except Exception as e:
-        print(f"❌ Validation error: {e}")
+        print(f"❌ Error parsing callback: {e}")
         return {"status": "invalid"}
 
     if callback.transactionStatus == "Approved":
-        msg = (
-            f"✅ Оплата успішна!\n"
-            f"Замовлення: {callback.orderReference}\n"
-            f"Сума: {callback.amount} {callback.currency}"
-        )
-        background_tasks.add_task(tg_api.send_message, msg)
+        order_data = get_order(callback.orderReference)
 
-    return {"orderReference": callback.orderReference, "status": "ok"}
+        if order_data:
+            delete_order(callback.orderReference)
+            payment_request = PaymentRequest(**order_data)
+            msg = tg_api.build_telegram_message(callback.orderReference, payment_request)
+        else:
+            msg = (
+                f"✅ Оплата без збережених деталей.\n"
+                f"Сума: {callback.amount} {callback.currency}\n"
+                f"Замовлення: {callback.orderReference}"
+            )
+
+        background_tasks.add_task(tg_api.send_message, msg)
+        return {"orderReference": callback.orderReference, "status": "accept"}
+
+    return {"orderReference": callback.orderReference, "status": "reject"}
+ 

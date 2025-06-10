@@ -36,6 +36,29 @@ const customStyles = {
 const Basket = ({ bars }) => {
     const { products, setProducts } = useContext(CartContext);
 
+
+    const [errors, setErrors] = useState({});
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!name.trim()) newErrors.name = true;
+        if (!phone.trim()) newErrors.phone = true;
+        if (!email.trim()) newErrors.email = true;
+
+        if (!selectedRegion) newErrors.region = true;
+        if (!selectedCity) newErrors.city = true;
+
+        if (deliveryMethod === "np_branch") {
+            if (!selectedWarehouse) newErrors.warehouse = true;
+        } else {
+            if (!street.trim()) newErrors.street = true;
+            if (!house.trim()) newErrors.house = true;
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const [signature, setSignature] = useState("");
     const [merchantAccount, setMerchantAccount] = useState("marsea_shop_com1");
     const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com");
@@ -89,6 +112,11 @@ const Basket = ({ bars }) => {
     const wayforpayFormRef = React.useRef(null);
 
     const handleWayforpay = async () => {
+        if (totalProductsPrice < 200) {
+            alert("Мінімальна сума замовлення 200₴");
+            return;
+        }
+
         const cart = products.map((e) => ({
             name: e.namee,
             price: e.price,
@@ -119,24 +147,65 @@ const Basket = ({ bars }) => {
             const data = response.data;
 
             if (paymentMethod === "card") {
-                const data1 = data.params; // Your backend should return params directly if it's handling the WayForPay request
-                // console.log(data1);
-
-                setSignature(data1.merchantSignature);
-                setOrderDate(data1.orderDate);
-                setOrderReference(data1.orderReference);
-                setAmount(String(data1.amount)); // Ensure amount is a string
-
-                // Do NOT submit the form here directly.
-                // The useEffect will handle the submission once state is updated.
+                // сохраните данные во временное состояние
+                fillAndSubmitWayforpayForm(data.params);
             } else {
                 window.location.href = "https://marsea-shop.com/thankyou";
-                // console.log("Оплата готівкою або помилка", data);
             }
         } catch (error) {
             console.error("Помилка при оформленні замовлення", error);
-            // You might want to show an error message to the user here
+            alert("Виникла помилка при оформленні замовлення. Будь ласка, спробуйте ще раз.");
         }
+    };
+
+    const fillAndSubmitWayforpayForm = (wayforpayParams) => {
+        // ✅ вызывается только из `handleWayforpay`, но вызов сабмита вынесен в клик-обработчик
+        setTimeout(() => {
+            const form = wayforpayFormRef.current;
+            if (!form) return;
+
+            form.querySelector('input[name="merchantSignature"]').value = wayforpayParams.merchantSignature;
+            form.querySelector('input[name="orderDate"]').value = wayforpayParams.orderDate;
+            form.querySelector('input[name="orderReference"]').value = wayforpayParams.orderReference;
+            form.querySelector('input[name="amount"]').value = String(wayforpayParams.amount);
+
+            // Удалить и пересоздать поля
+            form.querySelectorAll('input[name="productName[]"]').forEach(input => input.remove());
+            form.querySelectorAll('input[name="productPrice[]"]').forEach(input => input.remove());
+            form.querySelectorAll('input[name="productCount[]"]').forEach(input => input.remove());
+
+            products.forEach(product => {
+                const nameInput = document.createElement('input');
+                nameInput.type = 'hidden';
+                nameInput.name = 'productName[]';
+                nameInput.value = product.namee;
+                form.appendChild(nameInput);
+
+                const priceInput = document.createElement('input');
+                priceInput.type = 'hidden';
+                priceInput.name = 'productPrice[]';
+                priceInput.value = String(`${product.price}.00`);
+                form.appendChild(priceInput);
+
+                const countInput = document.createElement('input');
+                countInput.type = 'hidden';
+                countInput.name = 'productCount[]';
+                countInput.value = product.quantity;
+                form.appendChild(countInput);
+            });
+
+            form.querySelector('input[name="clientFirstName"]').value = name;
+            form.querySelector('input[name="clientAddress"]').value = `${street}, ${house}, ${flat}`;
+            form.querySelector('input[name="clientCity"]').value = selectedCity?.value;
+            form.querySelector('input[name="clientEmail"]').value = email;
+
+            form.target = "_blank";
+
+            // ✅ ОБЯЗАТЕЛЬНО вызвать submit через клик
+            const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
+            form.dispatchEvent(clickEvent); // iOS лучше воспринимает такое поведение
+            form.submit();
+        }, 0); // микрозадержка
     };
 
     useEffect(() => {
@@ -150,16 +219,6 @@ const Basket = ({ bars }) => {
         localStorage.setItem("cart", JSON.stringify(products));
     }, [products]);
 
-    useEffect(() => {
-        // This useEffect will trigger ONLY when signature, orderDate, orderReference, or amount change.
-        // This ensures the form is submitted only when all necessary data is available.
-        if (signature && orderDate && orderReference && amount && paymentMethod === "card") {
-            if (wayforpayFormRef.current) {
-                wayforpayFormRef.current.target = "_blank"; // Open in a new tab
-                wayforpayFormRef.current.submit();
-            }
-        }
-    }, [signature, orderDate, orderReference, amount, paymentMethod]); // Dependencies for this effect
 
     useEffect(() => {
         if (!products || products.length === 0) return;
@@ -240,13 +299,13 @@ const Basket = ({ bars }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="order_form">
+                    <form className="order_form">
                         <div className="order_text">данні для замовлення</div>
                         <div className="order_details_main">
                             <div className="name_input">ім’я</div>
                             <input
                                 type="text"
-                                className="form_input"
+                                className={`form_input ${errors.name ? "error" : ""}`}
                                 placeholder="Ваше ім’я"
                                 value={name}
                                 onChange={(e) => {
@@ -256,7 +315,7 @@ const Basket = ({ bars }) => {
                             <div className="name_input">Телефон</div>
                             <input
                                 type="text"
-                                className="form_input"
+                                className={`form_input ${errors.phone ? "error" : ""}`}
                                 placeholder="+380 (93) 993 93 93"
                                 value={phone}
                                 onChange={(e) => {
@@ -266,7 +325,7 @@ const Basket = ({ bars }) => {
                             <div className="name_input">пошта</div>
                             <input
                                 type="text"
-                                className="form_input"
+                                className={`form_input ${errors.email ? "error" : ""}`}
                                 placeholder="example@gmail.com"
                                 value={email}
                                 onChange={(e) => {
@@ -317,6 +376,7 @@ const Basket = ({ bars }) => {
                                 <div className="name_input">ОБЛАСТЬ</div>
                                 <div style={{ width: "300px", margin: "20px auto" }}>
                                     <Select
+                                        classNamePrefix={errors.region ? "select-error" : ""}
                                         options={regionOptions}
                                         placeholder="ОБЛАСТЬ"
                                         styles={customStyles}
@@ -330,6 +390,7 @@ const Basket = ({ bars }) => {
                                     />
                                     <div className="name_input">МІСТО</div>
                                     <Select
+                                        classNamePrefix={errors.city ? "select-error" : ""}
                                         options={cityOptions}
                                         placeholder="МІСТО"
                                         styles={customStyles}
@@ -345,6 +406,7 @@ const Basket = ({ bars }) => {
                                         <>
                                             <div className="name_input">ВІДДІЛЕННЯ</div>
                                             <Select
+                                                classNamePrefix={errors.warehouse ? "select-error" : ""}
                                                 options={warehouseOptions}
                                                 placeholder="ВІДДІЛЕННЯ"
                                                 styles={customStyles}
@@ -358,7 +420,7 @@ const Basket = ({ bars }) => {
                                         <>
                                             <div className="name_input">ВУЛИЦЯ</div>
                                             <input
-                                                className="name_input_curier"
+                                                className={`name_input_curier ${errors.street ? "error" : ""}`}
                                                 placeholder="ДРАГОМАНОВА 2А"
                                                 value={street}
                                                 onChange={(e) => {
@@ -367,7 +429,7 @@ const Basket = ({ bars }) => {
                                             />
                                             <div className="name_input">БУДИНОК</div>
                                             <input
-                                                className="name_input_curier"
+                                                className={`name_input_curier ${errors.house ? "error" : ""}`}
                                                 placeholder="2"
                                                 value={house}
                                                 onChange={(e) => {
@@ -414,21 +476,26 @@ const Basket = ({ bars }) => {
                                 Оплата карткою(WayForPay)
                             </label>
 
-                            <button
-                                className="order_button_next"
-                                onClick={() => {
-                                    if (totalProductsPrice >= 200) {
-                                        handleWayforpay();
-                                    } else {
-                                        // You might want to show a message if the total is less than 200
-                                        alert("Мінімальна сума замовлення 200₴");
-                                    }
-                                }}
+                            <button type = "submit"
+                                    className="order_button_next"
+                                    onClick={(e) => {
+                                        e.preventDefault(); // Остановим отправку формы
+                                        if (totalProductsPrice < 200) {
+                                            alert("Мінімальна сума замовлення 200₴");
+                                            return;
+                                        }
+
+                                        if (validateForm()) {
+                                            handleWayforpay();
+                                        } else {
+                                            window.scrollTo({ top: 0, behavior: 'smooth' }); // Поднимем к форме
+                                        }
+                                    }}
                             >
                                 Замовити
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div className="bars_main_block">

@@ -170,7 +170,6 @@ hr{
     .mobile_menu .society_mob_menu{
         display: flex;
         gap: 10px;
-        z-index: 999;
         margin-top: 8px;
     }
     .fish_mobile_menu{

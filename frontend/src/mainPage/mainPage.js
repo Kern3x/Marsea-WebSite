@@ -82,14 +82,14 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
 
 
 
-            <img src={mob_cart} alt="" className = "mob_cart_btn" onClick = {() => {
+            <img loading = "lazy" src={mob_cart} alt="" className = "mob_cart_btn" onClick = {() => {
                 document.querySelector(".modal_cart_allscreen").classList.toggle("opacity_mob")
             }} />
             <Header setProducts={setProducts} products={products}/>
             <div className="main_page">
                 <div className="main_banner_block">
                     <div className="main_banner">
-                        <img src={main_banner} alt=""/>
+                        <img loading = "lazy" src={main_banner} alt=""/>
                     </div>
                     <div className="main_banner_block_info">
                         <div className="main_banner_info">
@@ -104,7 +104,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                                 <div className="basket_block" style={{position:"relative"}}>
                                     <a onClick={() => {
                                         document.querySelector(".cart_modal").classList.toggle("opacity_t")
-                                    }}><img src={basket} alt=""/></a>
+                                    }}><img loading = "lazy" src={basket} alt=""/></a>
                                     <div className="cart_modal">
                                         <div className="cart_modal_text">Деталі замовлення</div>
                                         {products.length < 1 ? <>
@@ -216,26 +216,24 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                 <div className="marsea_line">
                     {window.innerWidth > 1000 ?  <div className="line_images">
                         {Array.from({ length: Math.floor(window.innerWidth / 180)  }).map((_, index) => (
-                            <img key={index} src={marseaLine} alt="" />
+                            <img loading = "lazy" key={index} src={marseaLine} alt="" />
                         ))}
                     </div> : <div className = "line_images">
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
                     </div>}
                     <div className="desc_marsea_line">
-                        <div className="h1_marsea_line">
-                            ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
-                        </div>
+
                         <a  onClick={() => {
                             products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
                         }} className="marsi_a">
@@ -250,7 +248,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                 <a name="about"></a>
                 <div className="about_marsea">
                     <div className="info_about_marsea">
-                        <img src={logo} alt=""/>
+                        <img loading = "lazy" src={logo} alt=""/>
                         <div className="about_marsea_text">
                             Ми — <span>MARSEA</span>. <br/>Ми створюємо не просто батончики й фрукти.
                             Ми створюємо естетику турботи про себе. Кожен продукт — це
@@ -258,7 +256,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         </div>
                     </div>
                     <div className="marsea_image">
-                        <img src={marseaPhoto} alt=''/>
+                        <img loading = "lazy" src={marseaPhoto} alt=''/>
                     </div>
                 </div>
                 <a name="powder"></a>
@@ -267,8 +265,7 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                         порційні порошки
                     </div>
                     <div className="powder_block_description">
-                        Сублімовані фрукти — максимум користі, мінімум зусиль
-                        .Додавай у смузі, йогурт або воду — і отримуй результат.
+                        Сублімовані фрукти — максимум користі, мінімум зусиль. Додавай у смузі, йогурт або воду — і отримуй результат.
                     </div>
                     <div className="for_over">
                         {window.innerWidth > 1000 ?
@@ -313,14 +310,14 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                 </div>
                 <a name="beautycombo"></a>
                 <div className="beauty_block">
-                    <img src={beautyCat} alt="" className="beautyCat"/>
-                    <img src={beautyLama} alt="" className="beautyLama"/>
+                    <img loading = "lazy" src={beautyCat} alt="" className="beautyCat"/>
+                    <img loading = "lazy" src={beautyLama} alt="" className="beautyLama"/>
                     <div className="beauty_block_h1">
                         beauty комбо
                     </div>
                     <div className="beauty_block_description">
                         Подвійна порція натуральних смаків: манго-банан,
-                        ягідно-фруктовий та обліпиха-черешня — по 2 саші кожного.
+                        ягідно-фруктовий та обліпиха-черешня — по 2 саше кожного.
                         Ідеальний мікс для краси та енергії.
                     </div>
                     <div className="beauty_block_products">
@@ -339,26 +336,26 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                 <div className="marsea_line">
                     {window.innerWidth > 1000 ?  <div className="line_images">
                         {Array.from({ length: Math.floor(window.innerWidth / 180)  }).map((_, index) => (
-                            <img key={index} src={marseaLine} alt="" />
+                            <img loading = "lazy" key={index} src={marseaLine} alt="" />
                         ))}
                     </div> : <div className = "line_images">
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
-                        <img src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
+                        <img loading = "lazy" src = {marseaLine} alt = ""/>
                     </div>}
                     <div className="desc_marsea_line">
-                        <div className="h1_marsea_line">
+                        {/*<div className="h1_marsea_line">
                             ТВІЙ ЗДОРОВИЙ РИТУАЛ У ЗРУЧНОМУ НАБОРІ
-                        </div>
+                        </div>*/}
                         <a  onClick={() => {
                             products1 < 200 ? document.querySelector(".order_summ_min").classList.add("dis_block_summ") : window.location.href = "/basket"
                         }} className="marsi_a">
@@ -424,8 +421,8 @@ const MainPage = ({bars, powders, kombucha, sets, beautyKombo,}) => {
                 </div>
                 <a name="showbox"></a>
                 <div className="show_box">
-                    <img src={cat_showbox} alt="" className="cat_showbox"/>
-                    <img src={fish_showbox} alt="" className="fish_showbox"/>
+                    <img loading = "lazy" src={cat_showbox} alt="" className="cat_showbox"/>
+                    <img loading = "lazy" src={fish_showbox} alt="" className="fish_showbox"/>
                     <div className="show_box_h1">
                         шоубокс
                     </div>

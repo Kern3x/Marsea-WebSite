@@ -36,5 +36,7 @@ class WayForPayCallback(BaseModel):
     amount: float
     currency: str
     transactionStatus: str
-    reason: Optional[str] = ""
     merchantSignature: str
+
+    class Config:
+        extra = "allow"

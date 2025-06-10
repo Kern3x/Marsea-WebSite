@@ -99,14 +99,18 @@ from fastapi import Request
 async def payment_callback(request: Request, background_tasks: BackgroundTasks):
     data = await request.json()
 
-    # Витягуємо потрібні поля
-    order = data.get("orderReference")
-    amount = data.get("amount")
-    currency = data.get("currency")
-    status = data.get("transactionStatus")
+    try:
+        callback = WayForPayCallback(**data)
+    except Exception as e:
+        print(f"❌ Validation error: {e}")
+        return {"status": "invalid"}
 
-    if status == "Approved":
-        msg = f"✅ Оплата успішна!\nЗамовлення: {order}\nСума: {amount} {currency}"
+    if callback.transactionStatus == "Approved":
+        msg = (
+            f"✅ Оплата успішна!\n"
+            f"Замовлення: {callback.orderReference}\n"
+            f"Сума: {callback.amount} {callback.currency}"
+        )
         background_tasks.add_task(tg_api.send_message, msg)
 
-    return {"status": "ok"}
+    return {"orderReference": callback.orderReference, "status": "ok"}

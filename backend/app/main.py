@@ -92,43 +92,13 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     )
 
 
-from fastapi import Request, BackgroundTasks
-from app.utils.schemas import WayForPayCallback
+from fastapi import Request
+
 
 @app.post("/pay-callback")
 async def payment_callback(request: Request, background_tasks: BackgroundTasks):
-    content_type = request.headers.get("content-type", "")
-    if "application/json" in content_type:
-        data = await request.json()
-    elif "application/x-www-form-urlencoded" in content_type:
-        form = await request.form()
-        data = dict(form)
-    else:
-        return {"status": "unsupported content type"}
+    body = await request.body()
+    print(f"📩 RAW CALLBACK: {body.decode()}")
 
-    # Парсимо як WayForPayCallback, якщо не вистачає полів — буде виняток
-    try:
-        callback = WayForPayCallback(**data)
-    except Exception as e:
-        print("❌ Parsing error:", e)
-        return {"status": "invalid format"}
-
-    if callback.transactionStatus == "Approved":
-        order_data = get_order(callback.orderReference)
-
-        if order_data:
-            delete_order(callback.orderReference)
-            payment_request = PaymentRequest(**order_data)
-            msg = tg_api.build_telegram_message(callback.orderReference, payment_request)
-        else:
-            msg = (
-                f"✅ Оплата без збережених деталей.\n"
-                f"Сума: {callback.amount} {callback.currency}\n"
-                f"Замовлення: {callback.orderReference}"
-            )
-
-        background_tasks.add_task(tg_api.send_message, msg)
-
-        return {"orderReference": callback.orderReference, "status": "accept"}
-
-    return {"orderReference": callback.orderReference, "status": "reject"}
+    with open("message.txt", "w") as file:
+        file.write(str(f"📩 RAW CALLBACK: {body.decode()}"))

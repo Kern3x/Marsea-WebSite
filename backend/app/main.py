@@ -92,35 +92,43 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     )
 
 
-import logging
-logger = logging.getLogger(__name__)
+from fastapi import Request, BackgroundTasks
+from app.utils.schemas import WayForPayCallback
 
 @app.post("/pay-callback")
-async def payment_callback(callback: WayForPayCallback, background_tasks: BackgroundTasks):
-    logger.info(f"📥 Callback received: {callback.orderReference} status={callback.transactionStatus}")
+async def payment_callback(request: Request, background_tasks: BackgroundTasks):
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        data = await request.json()
+    elif "application/x-www-form-urlencoded" in content_type:
+        form = await request.form()
+        data = dict(form)
+    else:
+        return {"status": "unsupported content type"}
+
+    # Парсимо як WayForPayCallback, якщо не вистачає полів — буде виняток
+    try:
+        callback = WayForPayCallback(**data)
+    except Exception as e:
+        print("❌ Parsing error:", e)
+        return {"status": "invalid format"}
 
     if callback.transactionStatus == "Approved":
         order_data = get_order(callback.orderReference)
 
         if order_data:
-            logger.info("✅ Found order data.")
             delete_order(callback.orderReference)
             payment_request = PaymentRequest(**order_data)
             msg = tg_api.build_telegram_message(callback.orderReference, payment_request)
         else:
-            logger.warning("⚠️ Order data not found, fallback to raw message.")
             msg = (
                 f"✅ Оплата без збережених деталей.\n"
                 f"Сума: {callback.amount} {callback.currency}\n"
                 f"Замовлення: {callback.orderReference}"
             )
 
-        logger.info(f"📤 Sending message to Telegram: {msg}")
-        await tg_api.send_message(msg)
+        background_tasks.add_task(tg_api.send_message, msg)
 
         return {"orderReference": callback.orderReference, "status": "accept"}
 
-    logger.info("❌ Payment not approved.")
     return {"orderReference": callback.orderReference, "status": "reject"}
-
- 

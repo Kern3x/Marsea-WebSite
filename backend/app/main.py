@@ -97,8 +97,16 @@ from fastapi import Request
 
 @app.post("/pay-callback")
 async def payment_callback(request: Request, background_tasks: BackgroundTasks):
-    body = await request.body()
-    print(f"📩 RAW CALLBACK: {body.decode()}")
+    data = await request.json()
 
-    with open("message.txt", "w") as file:
-        file.write(str(f"📩 RAW CALLBACK: {body.decode()}"))
+    # Витягуємо потрібні поля
+    order = data.get("orderReference")
+    amount = data.get("amount")
+    currency = data.get("currency")
+    status = data.get("transactionStatus")
+
+    if status == "Approved":
+        msg = f"✅ Оплата успішна!\nЗамовлення: {order}\nСума: {amount} {currency}"
+        background_tasks.add_task(tg_api.send_message, msg)
+
+    return {"status": "ok"}

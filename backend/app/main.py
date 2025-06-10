@@ -92,27 +92,35 @@ async def create_payment(data: PaymentRequest, background_tasks: BackgroundTasks
     )
 
 
+import logging
+logger = logging.getLogger(__name__)
+
 @app.post("/pay-callback")
-async def payment_callback(
-    callback: WayForPayCallback, background_tasks: BackgroundTasks
-):
+async def payment_callback(callback: WayForPayCallback, background_tasks: BackgroundTasks):
+    logger.info(f"📥 Callback received: {callback.orderReference} status={callback.transactionStatus}")
+
     if callback.transactionStatus == "Approved":
         order_data = get_order(callback.orderReference)
 
         if order_data:
+            logger.info("✅ Found order data.")
             delete_order(callback.orderReference)
             payment_request = PaymentRequest(**order_data)
             msg = tg_api.build_telegram_message(callback.orderReference, payment_request)
         else:
+            logger.warning("⚠️ Order data not found, fallback to raw message.")
             msg = (
                 f"✅ Оплата без збережених деталей.\n"
                 f"Сума: {callback.amount} {callback.currency}\n"
                 f"Замовлення: {callback.orderReference}"
             )
 
-        background_tasks.add_task(tg_api.send_message, msg)
+        logger.info(f"📤 Sending message to Telegram: {msg}")
+        await tg_api.send_message(msg)
 
         return {"orderReference": callback.orderReference, "status": "accept"}
 
+    logger.info("❌ Payment not approved.")
     return {"orderReference": callback.orderReference, "status": "reject"}
+
  

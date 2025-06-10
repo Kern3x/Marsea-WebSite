@@ -37,7 +37,7 @@ const Basket = ({ bars }) => {
     const { products, setProducts } = useContext(CartContext);
 
     const [signature, setSignature] = useState("");
-    const [merchantAccount, setMerchantAccount] = useState("freelance_user_66f5183794ca1");
+    const [merchantAccount, setMerchantAccount] = useState("marsea_shop_com1");
     const [merchantDomainName, setMerchantDomainName] = useState("marsea-shop.com");
     const [orderDate, setOrderDate] = useState(""); // Renamed from rand for clarity
     const [orderReference, setOrderReference] = useState(""); // Renamed from rand1 for clarity

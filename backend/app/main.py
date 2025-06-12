@@ -107,16 +107,12 @@ async def payment_callback(request: Request, background_tasks: BackgroundTasks):
         if order_data:
             delete_order(callback.orderReference)
             payment_request = PaymentRequest(**order_data)
-            msg = tg_api.build_telegram_message(callback.orderReference, payment_request)
-        else:
-            msg = (
-                f"✅ Оплата без збережених деталей.\n"
-                f"Сума: {callback.amount} {callback.currency}\n"
-                f"Замовлення: {callback.orderReference}"
+            msg = tg_api.build_telegram_message(
+                callback.orderReference, payment_request
             )
 
-        background_tasks.add_task(tg_api.send_message, msg)
-        return {"orderReference": callback.orderReference, "status": "accept"}
+            background_tasks.add_task(tg_api.send_message, msg)
+
+            return {"orderReference": callback.orderReference, "status": "accept"}
 
     return {"orderReference": callback.orderReference, "status": "reject"}
- 

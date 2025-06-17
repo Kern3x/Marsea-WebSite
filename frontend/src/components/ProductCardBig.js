@@ -4,7 +4,7 @@ import bar1 from "./images/bar1.png";
 import "./productCardBig.css"
 import setImage from "./images/set.png"
 import CartContext from "../CartContext";
-
+/* global fbq */
 const ProductCardBig = () => {
     const { products, setProducts } = useContext(CartContext);
     const addToCart1 = () => {

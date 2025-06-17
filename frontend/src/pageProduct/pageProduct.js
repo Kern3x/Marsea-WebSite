@@ -18,13 +18,18 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
-
+/* global fbq */
 const PageProduct = ({ image, description, namee, price, bars, phrase, aboutProduct, lastPhrase, composition}) => {
 
     const [products1, setProducts1] = useState(0)
     const { products, setProducts } = useContext(CartContext);
     const addToCart1 = () => {
-
+        fbq('track', 'AddToCart', {
+            content_ids: [namee],
+            content_type: 'product',
+            value: price,
+            currency: 'UAH'
+        });
         document.querySelector(".cart_modal_h").classList.add("opacity_o")
         console.log(products)
         const updatedCart = [...products];

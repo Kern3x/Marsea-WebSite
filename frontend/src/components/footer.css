@@ -5,6 +5,7 @@
     padding: 40px 60px;
     display: flex;
     flex-direction: column;
+    z-index: 1;
 
 }
 .footer_logo_menu{

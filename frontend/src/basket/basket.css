@@ -95,6 +95,9 @@
 .curier_basket{
     margin-top: 30px;
 }
+.custom-checkbox.checkbox_mail.curier_basket.card_pay{
+    margin-top: 0;
+}
 .order_text{
     font-family: Cormorant;
     font-weight: 400;

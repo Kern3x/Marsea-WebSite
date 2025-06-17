@@ -3,10 +3,16 @@ import addToCart from "../components/images/addToCart.svg";
 import bar1 from "../components/images/bar1.png";
 import "./productPageCard.css"
 import CartContext from "../CartContext";
+/* global fbq */
 const ProductPageCard = ({image, description, namee, price, href}) => {
     const { products, setProducts } = useContext(CartContext);
     const addToCart1 = () => {
-
+        fbq('track', 'AddToCart', {
+            content_ids: [namee],
+            content_type: 'product',
+            value: price,
+            currency: 'UAH'
+        });
         document.querySelector(".cart_modal_h").classList.add("opacity_o")
         console.log(products)
         const updatedCart = [...products];

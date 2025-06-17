@@ -26,6 +26,15 @@ const ThankYouPage = ({bars}) => {
     useEffect(() => {
 
         setTimeout(() => {
+            console.log(products)
+           if (products.length > 0){
+                fbq('track', 'Purchase', {
+                    content_ids: products.map(p => p.namee),
+                    content_type: 'product',
+                    value: products1,
+                    currency: 'UAH'
+                });
+            }
             localStorage.setItem("cart", []);
         }, 5000)
     }, [])

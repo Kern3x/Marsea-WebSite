@@ -70,7 +70,7 @@ const Basket = ({ bars }) => {
     const [productCountState, setProductCountState] = useState([]);
 
     const [deliveryMethod, setDeliveryMethod] = useState("np_branch");
-    const [paymentMethod, setPaymentMethod] = useState("cod");
+    const [paymentMethod, setPaymentMethod] = useState("card");
 
     const [selectedRegion, setSelectedRegion] = useState(null);
     const [selectedCity, setSelectedCity] = useState(null);
@@ -451,7 +451,7 @@ const Basket = ({ bars }) => {
                             </div>
 
                             <div className="delivery_type">СПОСІБ ОПЛАТИ</div>
-                            <label className="custom-checkbox checkbox_mail">
+                            <label className="custom-checkbox checkbox_mail" style={{display:"none"}}>
                                 <input
                                     type="radio"
                                     name="payment"
@@ -463,7 +463,7 @@ const Basket = ({ bars }) => {
                                 <span className="checkbox-custom"></span>
                                 Оплата готівкою
                             </label>
-                            <label className="custom-checkbox checkbox_mail curier_basket">
+                            <label className="custom-checkbox checkbox_mail curier_basket card_pay">
                                 <input
                                     type="radio"
                                     name="payment"

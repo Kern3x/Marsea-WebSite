@@ -8,7 +8,12 @@ import CartContext from "../CartContext";
 const ProductCardBig = () => {
     const { products, setProducts } = useContext(CartContext);
     const addToCart1 = () => {
-
+        fbq('track', 'AddToCart', {
+            content_ids: ["Асорті-бокс: 10 батончиків MARSEA"],
+            content_type: 'product',
+            value: 740,
+            currency: 'UAH'
+        });
         document.querySelector(".cart_modal_h").classList.add("opacity_o")
         console.log(products)
         const updatedCart = [...products];

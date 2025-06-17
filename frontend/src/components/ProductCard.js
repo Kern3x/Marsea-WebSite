@@ -1,8 +1,15 @@
 import React, {useState} from 'react';
 import "./productCard.css"
 import addToCart from "./images/addToCart.svg"
+/* global fbq */
 const ProductCard = ({image, description, namee, price, href, setProducts, products}) => {
     const addToCart1 = () => {
+        fbq('track', 'AddToCart', {
+            content_ids: [namee],
+            content_type: 'product',
+            value: price,
+            currency: 'UAH'
+        });
 
         document.querySelector(".cart_modal_h").classList.add("opacity_o")
         console.log(products)

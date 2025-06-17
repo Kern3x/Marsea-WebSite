@@ -7,7 +7,7 @@ import ProductCard from "./ProductCard";
 import CartContext from "../CartContext";
 import "./thankyoupage.css"
 import Footer from "./Footer";
-
+/* global fbq */
 const ThankYouPage = ({bars}) => {
     const {products, setProducts} = useContext(CartContext);
 
@@ -24,10 +24,10 @@ const ThankYouPage = ({bars}) => {
 
     }, [products]);
     useEffect(() => {
-
+        if (products1 > 0){
         setTimeout(() => {
             console.log(products)
-           if (products.length > 0){
+           if (products.length > 0 ){
                 fbq('track', 'Purchase', {
                     content_ids: products.map(p => p.namee),
                     content_type: 'product',
@@ -36,8 +36,8 @@ const ThankYouPage = ({bars}) => {
                 });
             }
             localStorage.setItem("cart", []);
-        }, 5000)
-    }, [])
+        }, 5000)}
+    }, [products1])
     return (
         <>{products.length ? <>
             <Header products={products} setProducts={setProducts}/>
